@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
-import { getAllSchemas, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
+import { getAllSchemas, toggleCreateModal, getSchemaObjects } from '../../store/actions/Auth';
 
 class Objects extends React.Component {
     constructor(props) {
@@ -20,7 +20,10 @@ class Objects extends React.Component {
     };
 
     componentWillReceiveProps({ allSchemas }) {
-        this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {}});
+        this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {} }, () => {
+            if (this.state.selectedSchema['objectTypeId'])
+                this.props.getSchemaObjects(this.state.selectedSchema['objectTypeId'])
+        });
     };
 
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
@@ -76,8 +79,8 @@ class Objects extends React.Component {
                 <div className="main-container player-scores">
                     <div className='main-container-head mb-3'>
                         <p className="main-container-heading">Select Schema</p>
-                        {allSchemas && allSchemas.length>0 && allSchemas.map(data=>{
-                            return <button className="add-btn">{data['labels']['plural']}</button>
+                        {allSchemas && allSchemas.length > 0 && allSchemas.map(data => {
+                            return <button className={`btn ${data['labels']['plural'] == selectedSchema['labels']['plural'] && 'btn-success'} px-2`}>{data['labels']['plural']}</button>
                         })}
                     </div>
                     <div className='main-container-head mb-3'>
@@ -102,25 +105,22 @@ class Objects extends React.Component {
 
                 <Modal isOpen={false} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
                     <ModalHeader toggle={() => this.hidePropertiesModal()}>
-                        {/* <div className="reward-modal-logo">
-                            <img src={require('../../assets/img/logo.png')} alt="modal-logo" />
-                        </div> */}
                         <div className="properties-modal-title"><p className=''>Properties</p></div>
                         <div className="properties-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body properties-modal-body">
-                            <div className='edit-add'>
-                                <div className="view-data row">
-                                    <div className="view-data-body col-md-12">
-                                        <div className="view-data-row my-2">
-                                            <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
-                                        </div>
-                                        <div className="view-data-row my-2 ml-5">
-                                            <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
-                                        </div>
+                        <div className='edit-add'>
+                            <div className="view-data row">
+                                <div className="view-data-body col-md-12">
+                                    <div className="view-data-row my-2">
+                                        <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
+                                    </div>
+                                    <div className="view-data-row my-2 ml-5">
+                                        <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </ModalBody>
                 </Modal>
             </div>
@@ -129,7 +129,7 @@ class Objects extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getAllSchemas, toggleCreateModal, sendRewards, setLoader
+    getAllSchemas, toggleCreateModal, getSchemaObjects
 };
 
 const mapStateToProps = ({ Auth }) => {
