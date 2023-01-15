@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
 
                 {/* ---------------PROPERTIES MODAL--------------- */}
 
-                <Modal isOpen={true} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
+                <Modal isOpen={false} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
                     <ModalHeader toggle={() => this.hidePropertiesModal()}>
                         {/* <div className="reward-modal-logo">
                             <img src={require('../../assets/img/logo.png')} alt="modal-logo" />
