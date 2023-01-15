@@ -12,6 +12,7 @@ class Objects extends React.Component {
         super(props);
         this.state = {
             allSchemas: [],
+            selectedSchema: {},
             properties: [],
             isPropertiesModal: false,
         };
@@ -19,7 +20,7 @@ class Objects extends React.Component {
     };
 
     componentWillReceiveProps({ allSchemas }) {
-        this.setState({ allSchemas });
+        this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {}});
     };
 
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
@@ -29,9 +30,9 @@ class Objects extends React.Component {
 
     render() {
         let { isRewardModal } = this.props;
-        let { allSchemas, properties, isPropertiesModal } = this.state;
+        let { allSchemas, selectedSchema, isPropertiesModal } = this.state;
 
-        console.log("********allSchemas::", allSchemas);
+        console.log("********selectedSchema::", selectedSchema);
 
         const columns = [
             {
@@ -80,7 +81,7 @@ class Objects extends React.Component {
                         })}
                     </div>
                     <div className='main-container-head mb-3'>
-                        <p className="main-container-heading">All Objects of </p>
+                        <p className="main-container-heading">{selectedSchema['labels'] ? `All Objects of ${selectedSchema['labels']['plural']}` : 'No Schema Available'}</p>
                         <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Object</button>
                     </div>
                     <Fragment>
