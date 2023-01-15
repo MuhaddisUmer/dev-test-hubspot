@@ -5,12 +5,10 @@ export const setLoader = (data) => ({
   payload: data,
 });
 
-/*========== DATA ACTIONS ============= */
-
+/*========== SCHEMA ACTIONS ============= */
 export const getAllSchemas = () => ({
   type: 'GET_ALL_SCHEMA_DATA',
 });
-
 
 export const setAllSchemas = (data) => ({
   type: 'SET_ALL_SCHEMA_DATA',
@@ -37,5 +35,14 @@ export const sendRewards = (data) => ({
   payload: data,
 });
 
+/*========== OBJECTS ACTIONS ============= */
+export const getSchemaObjects = (data) => ({
+  type: 'GET_SCHEMA_OBJECTS',
+  payload: data,
+});
 
-
+export const createSchemaObject = (objectId, data) => ({
+  type: 'CREATE_SCHEMA_OBJECT',
+  objectId,
+  payload: data,
+});
