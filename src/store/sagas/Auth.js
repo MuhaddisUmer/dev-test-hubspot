@@ -37,7 +37,6 @@ function postCall({ path, payload }) {
     .post(path, payload)
     .then(response => ({ response }))
     .catch(error => {
-      if (error.response.status === 401) EventBus.publish("tokenExpired");
       return { error };
     });
 };
@@ -47,7 +46,6 @@ function getCall(path) {
     .get(path)
     .then(response => ({ response }))
     .catch(error => {
-      if (error.response.status === 401) EventBus.publish("tokenExpired");
       return { error };
     });
 };
