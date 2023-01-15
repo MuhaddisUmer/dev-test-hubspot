@@ -11,9 +11,18 @@ export const getListData = () => ({
   type: 'GET_LIST_DATA',
 });
 
-
 export const setListData = (data) => ({
   type: 'SET_LIST_DATA',
+  payload: data,
+});
+
+export const getObjectData = (data) => ({
+  type: 'GET_OBJECT_DATA',
+  payload: data,
+});
+
+export const setObjectData = (data) => ({
+  type: 'SET_OBJECT_DATA',
   payload: data,
 });
 

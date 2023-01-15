@@ -8,7 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
-import { getListData, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
+import { getListData, getObjectData, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -29,27 +29,16 @@ class Dashboard extends React.Component {
     copied = () => EventBus.publish("success", 'Player Address Copied');
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-    showPropertiesModal = (properties) => this.setState({ properties }, this.setState({ isPropertiesModal: true }));
-    hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
+    getObjectType = (id) => this.props.getObjectData(id);
+    // hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
 
     render() {
         let { isRewardModal } = this.props;
         let { listData, properties, isPropertiesModal } = this.state;
 
-        console.log("********properties::", properties);
+        console.log("********listData::", listData);
 
-        const columns = [
-            // {
-            //     id: 'player',
-            //     Header: 'Player',
-            //     accessor: listData => listData['userId']['publicAddress']
-            //         ? <CopyToClipboard onCopy={this.copied} text={listData['userId']['publicAddress']}>
-            //             <button className="player-address">
-            //                 {listData['userId']['publicAddress'] && listData['userId']['publicAddress'].substring(0, 8) + '.....' + listData['userId']['publicAddress'].substring(34, listData['userId']['publicAddress'].length)}
-            //             </button>
-            //         </CopyToClipboard>
-            //         : '-',
-            // },
+        const mainColumns = [
             {
                 id: 'id',
                 Header: 'ID',
@@ -76,14 +65,23 @@ class Dashboard extends React.Component {
             },
             {
                 id: 'Action',
-                // Header: 'Player',
-                accessor: listData => listData['properties']
-                    ? <button className="view-btn" onClick={() => this.showPropertiesModal(listData['properties'])}>
+                Header: '',
+                accessor: listData => listData['objectTypeId']
+                    ? <button className="view-btn" onClick={() => this.getObjectType(listData['objectTypeId'])}>
                         View More
                     </button>
                     : '-',
             },
 
+        ];
+
+        const propertiesColumns = [
+           
+            // {
+            //     id: 'id',
+            //     Header: 'ID',
+            //     accessor: listData => listData['id'] ? listData['id'] : '-',
+            // },
         ];
 
         return (
@@ -99,7 +97,7 @@ class Dashboard extends React.Component {
                                 minRows={20}
                                 className="table"
                                 data={listData}
-                                columns={columns}
+                                columns={mainColumns}
                                 filterable={true}
                                 resolveData={listData => listData.map(row => row)}
                             />
@@ -108,30 +106,25 @@ class Dashboard extends React.Component {
                 </div>
 
                 {/* ---------------PROPERTIES MODAL--------------- */}
-
-                <Modal isOpen={true} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
+{/* 
+                <Modal isOpen={isPropertiesModal} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
                     <ModalHeader toggle={() => this.hidePropertiesModal()}>
-                        {/* <div className="reward-modal-logo">
-                            <img src={require('../../assets/img/logo.png')} alt="modal-logo" />
-                        </div> */}
                         <div className="properties-modal-title"><p className=''>Properties</p></div>
                         <div className="properties-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body properties-modal-body">
-                            <div className='edit-add'>
-                                <div className="view-data row">
-                                    <div className="view-data-body col-md-12">
-                                        <div className="view-data-row my-2">
-                                            <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
-                                        </div>
-                                        <div className="view-data-row my-2 ml-5">
-                                            <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div className='main-container-head mb-3'>
+                            <ReactTable
+                                minRows={30}
+                                className="table"
+                                data={properties}
+                                columns={propertiesColumns}
+                                filterable={true}
+                                resolveData={properties => properties.map(row => row)}
+                            />
+                        </div>
                     </ModalBody>
-                </Modal>
+                </Modal> */}
 
                 {/* ---------------REWARDS MODAL--------------- */}
 
@@ -172,11 +165,11 @@ class Dashboard extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getListData, toggleCreateModal, sendRewards, setLoader
+    getListData, getObjectData, toggleCreateModal, sendRewards, setLoader
 };
 
 const mapStateToProps = ({ Auth }) => {
-    let { publicAddress, listData, isRewardModal } = Auth;
-    return { publicAddress, listData, isRewardModal };
+    let { publicAddress, listData, objectData, isRewardModal } = Auth;
+    return { publicAddress, listData, objectData, isRewardModal };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

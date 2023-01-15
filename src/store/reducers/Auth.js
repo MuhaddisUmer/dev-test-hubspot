@@ -5,6 +5,7 @@ var initialState = {
   isLoader: { message: 'Please Wait...', status: false },
 
   listData: [],
+  objectData: {},
   isRewardModal: false,
 };
 
@@ -21,18 +22,24 @@ const Auth = (state = initialState, { type, payload }) => {
       };
 
     /*========== REWARDS REDUCERS ============= */
-    
+
     case 'SET_LIST_DATA':
       return {
         ...state,
         listData: payload
-      }
+      };
+
+    case 'SET_OBJECT_DATA':
+      return {
+        ...state,
+        objectData: payload
+      };
 
     case 'TOGGLE_CREATE_MODAL':
       return {
         ...state,
         isRewardModal: payload
-      }
+      };
 
     default:
       return state;

@@ -18,7 +18,7 @@
  /* ========== Custom Styles Properties Modal =========== */
   
  .main-modal.properties-modal {
-  max-width: 850px !important;
+  max-width: 1050px !important;
   top: 0% !important;
 }
 
@@ -40,6 +40,8 @@
 
 .properties-modal .properties-modal-body {
   padding: 25px !important;
+  margin: 25px;
+  background: #fff;
 }
 
 .properties-modal .properties-modal-body .text-field {

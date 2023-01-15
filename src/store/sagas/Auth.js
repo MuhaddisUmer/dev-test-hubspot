@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 import EventBus from 'eventing-bus';
 import { all, takeEvery, call, put } from 'redux-saga/effects';
 
-import { setListData, toggleCreateModal } from '../actions/Auth';
+import { setListData, setObjectData, toggleCreateModal } from '../actions/Auth';
 
 /*========== REWARDS FUNCTIONS =============*/
 
@@ -11,6 +11,12 @@ function* getListData() {
   const { error, response } = yield call(getCall, '/schemas');
   if (error) EventBus.publish("error", error['response']['results']['message']);
   else if (response) yield put(setListData(response['data']['results']));
+};
+
+function* getObjectData({ payload }) {
+  const { error, response } = yield call(getCall, `/schemas/${payload}`);
+  if (error) EventBus.publish("error", error['response']['results']['message']);
+  else if (response) yield put(setObjectData(response['data']['results']));
 };
 
 function* sendRewards({ payload }) {
@@ -25,6 +31,7 @@ function* sendRewards({ payload }) {
 
 function* actionWatcher() {
   yield takeEvery('GET_LIST_DATA', getListData);
+  yield takeEvery('GET_OBJECT_DATA', getObjectData);
   yield takeEvery('SEND_REWARDS', sendRewards);
 };
 
