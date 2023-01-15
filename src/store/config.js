@@ -6,8 +6,8 @@ const AppMode = ['development'];
 
 /* -- set API URLs --*/
 const development = 'http://localhost:8080/https://api.hubapi.com/crm/v3';
-const production = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
-const testing = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
+const production = 'http://localhost:8080/https://api.hubapi.com/crm/v3';
+const testing = 'http://localhost:8080/https://api.hubapi.com/crm/v3';
 
 let SocketUrl;
 let env = AppMode[0] || 'development', token = "pat-na1-42f6af9b-5d2c-40ee-9a0a-ae61cbea96cf";
