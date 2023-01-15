@@ -9,10 +9,8 @@ import { setListData, toggleCreateModal } from '../actions/Auth';
 
 function* getListData() {
   const { error, response } = yield call(getCall, '/schemas');
-    console.log("***********error::", error);
-    console.log("***********response::", response);
-  // if (error) EventBus.publish("error", error['response']['data']['message']);
-  // else if (response) yield put(setListData(response['data']['body']));
+  if (error) EventBus.publish("error", error['response']['results']['message']);
+  else if (response) yield put(setListData(response['data']['results']));
 };
 
 function* sendRewards({ payload }) {

@@ -124,7 +124,7 @@ p {
 
 .edit-add {
   text-align: center;
-  padding: 30px 70px;
+  padding: 15px 60px;
   border-radius: 20px;
   transition: all .5s ease-in-out;
   -webkit-transition: all .5s ease-in-out;
@@ -279,7 +279,7 @@ Button:focus {
 /* ========== Main Modal Styles =========== */
 
 .main-modal {
-  max-width: 500px !important;
+  max-width: 750px !important;
   top: 5%;
 }
 
@@ -291,7 +291,6 @@ Button:focus {
 .main-modal .modal-content {
   background-color: #6B1A10 !important;
   border-radius: 30px !important;
-  width: 575px !important;
 }
 
 .main-modal .modal-content .modal-header {

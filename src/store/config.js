@@ -5,9 +5,9 @@ const AppTitle = 'DASHBOARD';
 const AppMode = ['development'];
 
 /* -- set API URLs --*/
-const development = 'https://api.hubapi.com';
-const production = 'https://api.hubapi.com';
-const testing = 'https://api.hubapi.com';
+const development = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
+const production = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
+const testing = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
 
 let SocketUrl;
 let env = AppMode[0] || 'development', token = "pat-na1-42f6af9b-5d2c-40ee-9a0a-ae61cbea96cf";
@@ -25,5 +25,5 @@ switch (AppMode[0]) {
     SocketUrl = 'http://192.168.18.106:4000';
 }
 
-let ApiUrl = `${SocketUrl}/crm/v3`;
+let ApiUrl = `${SocketUrl}`;
 export { AppTitle, ApiUrl, SocketUrl, token, env };
