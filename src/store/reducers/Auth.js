@@ -5,6 +5,7 @@ var initialState = {
   isLoader: { message: 'Please Wait...', status: false },
 
   allSchemas: [],
+  singleSchema: {},
   isRewardModal: false,
 };
 
@@ -26,6 +27,12 @@ const Auth = (state = initialState, { type, payload }) => {
       return {
         ...state,
         allSchemas: payload
+      };
+
+    case 'SET_SINGLE_SCHEMA_DATA':
+      return {
+        ...state,
+        singleSchema: payload
       }
 
     case 'TOGGLE_CREATE_MODAL':

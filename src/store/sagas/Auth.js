@@ -15,7 +15,7 @@ function* getAllSchemas() {
 function* getSingleSchemas({ payload }) {
   const { error, response } = yield call(getCall, `/schemas/${payload}`);
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response) yield put(setSingleSchemas(response['data']['results']));
+  else if (response) yield put(setSingleSchemas(response['data']));
 };
 
 function* sendRewards({ payload }) {

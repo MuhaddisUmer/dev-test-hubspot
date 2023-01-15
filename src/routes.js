@@ -1,19 +1,19 @@
 
 import Objects from "./views/Objects/index.js";
-import Dashboard from "./views/Dashboard/index.js";
+import Schemas from "./views/Schemas/index.js";
 
 var routes = [
   {
     path: "/",
     hidden: true,
     layout: "/home",
-    component: Dashboard,
+    component: Schemas,
   },
   {
     path: "/scores",
     layout: "/home",
-    name: "Dashboard",
-    component: Dashboard,
+    name: "Schemas",
+    component: Schemas,
     icon: "tim-icons icon-atom",
   },
   {

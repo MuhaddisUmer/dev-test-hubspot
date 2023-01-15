@@ -280,7 +280,7 @@ Button:focus {
 
 .main-modal {
   max-width: 750px !important;
-  top: 5%;
+  top: 0%;
 }
 
 .main-modal .modal-header,

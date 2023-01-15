@@ -8,9 +8,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
-import { getAllSchemas, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
+import { getAllSchemas, getSingleSchemas, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
 
-class Dashboard extends React.Component {
+class Schemas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,23 +21,22 @@ class Dashboard extends React.Component {
         props.getAllSchemas();
     };
 
-    componentWillReceiveProps({ allSchemas, isRewardModal }) {
+    componentWillReceiveProps({ allSchemas, singleSchema }) {
         this.setState({ allSchemas });
+        if (singleSchema['properties'])
+            this.setState({ properties: singleSchema['properties'] }, () => this.setState({ isPropertiesModal: true }));
     };
 
     copied = () => EventBus.publish("success", 'Player Address Copied');
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-    getObjectType = (id) => this.props.getSingleSchemas(id);
-    // hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
+    singleSchema = (id) => this.props.getSingleSchemas(id);
+    togglePropertiesModal = () => this.setState({ isPropertiesModal: false }, () => this.setState({ properties: [] }));
 
     render() {
-        let { isRewardModal } = this.props;
         let { allSchemas, properties, isPropertiesModal } = this.state;
 
-        console.log("********allSchemas::", allSchemas);
-
-        const columns = [
+        const schemaColumns = [
             {
                 id: 'id',
                 Header: 'ID',
@@ -65,8 +64,8 @@ class Dashboard extends React.Component {
             {
                 id: 'Action',
                 // Header: 'Player',
-                accessor: allSchemas => allSchemas['properties']
-                    ? <button className="view-btn" onClick={() => this.showPropertiesModal(allSchemas['properties'])}>
+                accessor: allSchemas => allSchemas['objectTypeId']
+                    ? <button className="view-btn" onClick={() => this.singleSchema(allSchemas['objectTypeId'])}>
                         View More
                     </button>
                     : '-',
@@ -74,19 +73,33 @@ class Dashboard extends React.Component {
         ];
 
         const propertiesColumns = [
-           
-            // {
-            //     id: 'id',
-            //     Header: 'ID',
-            //     accessor: listData => listData['id'] ? listData['id'] : '-',
-            // },
+            {
+                id: 'name',
+                Header: 'Name',
+                accessor: listData => listData['name'] ? listData['name'] : '-',
+            },
+            {
+                id: 'label',
+                Header: 'Label',
+                accessor: listData => listData['label'] ? listData['label'] : '-',
+            },
+            {
+                id: 'type',
+                Header: 'Type',
+                accessor: listData => listData['type'] ? listData['type'] : '-',
+            },
+            {
+                id: 'fieldType',
+                Header: 'Field Type',
+                accessor: listData => listData['fieldType'] ? listData['fieldType'] : '-',
+            },
         ];
 
         return (
             <div className='content'>
                 <div className="main-container player-scores">
                     <div className='main-container-head mb-3'>
-                        <p className="main-container-heading">Dashboard</p>
+                        <p className="main-container-heading">All Schemas</p>
                         <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Schema</button>
                     </div>
                     <Fragment>
@@ -95,7 +108,7 @@ class Dashboard extends React.Component {
                                 minRows={20}
                                 className="table"
                                 data={allSchemas}
-                                columns={columns}
+                                columns={schemaColumns}
                                 filterable={true}
                                 resolveData={allSchemas => allSchemas.map(row => row)}
                             />
@@ -105,15 +118,15 @@ class Dashboard extends React.Component {
 
                 {/* ---------------PROPERTIES MODAL--------------- */}
 
-                <Modal isOpen={false} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
-                    <ModalHeader toggle={() => this.hidePropertiesModal()}>
+                <Modal isOpen={isPropertiesModal} toggle={() => this.togglePropertiesModal()} className="main-modal properties-modal">
+                    <ModalHeader toggle={() => this.togglePropertiesModal()}>
                         <div className="properties-modal-title"><p className=''>Properties</p></div>
                         <div className="properties-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body properties-modal-body">
-                    <div className='main-container-head mb-3'>
+                        <div className='main-container-head mb-3'>
                             <ReactTable
-                                minRows={30}
+                                minRows={10}
                                 className="table"
                                 data={properties}
                                 columns={propertiesColumns}
@@ -122,7 +135,7 @@ class Dashboard extends React.Component {
                             />
                         </div>
                     </ModalBody>
-                </Modal> */}
+                </Modal>
 
                 {/* ---------------REWARDS MODAL--------------- */}
 
@@ -163,11 +176,11 @@ class Dashboard extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getAllSchemas, toggleCreateModal, sendRewards, setLoader
+    getAllSchemas, getSingleSchemas, toggleCreateModal, sendRewards, setLoader
 };
 
 const mapStateToProps = ({ Auth }) => {
-    let { publicAddress, allSchemas, isRewardModal } = Auth;
-    return { publicAddress, allSchemas, isRewardModal };
+    let { allSchemas, singleSchema, isRewardModal } = Auth;
+    return { allSchemas, singleSchema, isRewardModal };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Schemas);

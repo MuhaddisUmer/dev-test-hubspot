@@ -18,8 +18,8 @@
  /* ========== Custom Styles Properties Modal =========== */
   
  .main-modal.properties-modal {
-  max-width: 1050px !important;
-  top: 0% !important;
+  max-width: 1150px !important;
+  top: -10% !important;
 }
 
 .modal.show .modal-dialog.properties-modal {
