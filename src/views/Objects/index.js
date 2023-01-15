@@ -1,16 +1,13 @@
 import moment from 'moment';
-import EventBus from "eventing-bus";
 import { connect } from 'react-redux';
 import ReactTable from 'react-table-6';
 import React, { Fragment } from 'react';
-import Button from '@material-ui/core/Button';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
 import { getAllSchemas, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
 
-class Dashboard extends React.Component {
+class Objects extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,11 +18,10 @@ class Dashboard extends React.Component {
         props.getAllSchemas();
     };
 
-    componentWillReceiveProps({ allSchemas, isRewardModal }) {
+    componentWillReceiveProps({ allSchemas }) {
         this.setState({ allSchemas });
     };
 
-    copied = () => EventBus.publish("success", 'Player Address Copied');
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
     showPropertiesModal = (properties) => this.setState({ properties }, this.setState({ isPropertiesModal: true }));
@@ -35,7 +31,7 @@ class Dashboard extends React.Component {
         let { isRewardModal } = this.props;
         let { allSchemas, properties, isPropertiesModal } = this.state;
 
-        console.log("********properties::", properties);
+        console.log("********allSchemas::", allSchemas);
 
         const columns = [
             {
@@ -71,14 +67,21 @@ class Dashboard extends React.Component {
                     </button>
                     : '-',
             },
+
         ];
 
         return (
             <div className='content'>
                 <div className="main-container player-scores">
                     <div className='main-container-head mb-3'>
-                        <p className="main-container-heading">Dashboard</p>
-                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Schema</button>
+                        <p className="main-container-heading">Select Schema</p>
+                        {allSchemas && allSchemas.length>0 && allSchemas.map(data=>{
+                            return <button className="add-btn">{data['labels']['plural']}</button>
+                        })}
+                    </div>
+                    <div className='main-container-head mb-3'>
+                        <p className="main-container-heading">All Objects of </p>
+                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Object</button>
                     </div>
                     <Fragment>
                         <div className='main-container-head mb-3'>
@@ -119,40 +122,6 @@ class Dashboard extends React.Component {
                             </div>
                     </ModalBody>
                 </Modal>
-
-                {/* ---------------REWARDS MODAL--------------- */}
-
-                {/* <Modal isOpen={isRewardModal} toggle={() => this.props.toggleCreateModal(false)} className="main-modal reward-modal">
-                    <ModalHeader toggle={() => this.props.toggleCreateModal(false)}>
-                        <div className="reward-modal-logo">
-                            <img src={require('../../assets/img/logo.png')} alt="modal-logo" />
-                        </div>
-                        <div className="reward-modal-title"><p className=''>Create Schema</p></div>
-                        <div className="reward-modal-line"><hr /></div>
-                    </ModalHeader>
-                    <ModalBody className="modal-body reward-modal-body">
-                        <div className="row">
-                            <div className="col-2"></div>
-                            <div className="col-8">
-                                <input
-                                    type="number"
-                                    name='rewards'
-                                    value={rewards}
-                                    variant="filled"
-                                    className='text-field'
-                                    onChange={this.handleEditChange}
-                                    placeholder="Enter the amount of Rewards"
-                                /> 
-                            </div>
-                            <div className="col-2"></div>
-                            <div className="col-12 mt-5 d-flex justify-content-around">
-                                <Button className="cancel-btn col-4" type='button' onClick={() => this.props.toggleCreateModal(false)}>Cancel</Button>
-                                <Button className="add-btn col-4" type='button' onClick={this.sendRewards}>Send</Button>
-                            </div>
-                        </div>
-                    </ModalBody>
-                </Modal> */}
-
             </div>
         );
     }
@@ -163,7 +132,7 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = ({ Auth }) => {
-    let { publicAddress, allSchemas, isRewardModal } = Auth;
-    return { publicAddress, allSchemas, isRewardModal };
+    let { allSchemas } = Auth;
+    return { allSchemas };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Objects);

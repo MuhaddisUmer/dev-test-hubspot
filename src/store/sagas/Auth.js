@@ -1,18 +1,16 @@
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import EventBus from 'eventing-bus';
 import { all, takeEvery, call, put } from 'redux-saga/effects';
 
-import { setListData, toggleCreateModal } from '../actions/Auth';
+import { setAllSchemas, toggleCreateModal } from '../actions/Auth';
 
 /*========== REWARDS FUNCTIONS =============*/
 
-function* getListData() {
+function* getAllSchemas() {
   const { error, response } = yield call(getCall, '/schemas');
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response) 
-    // yield put(setListData(response['data']['results']));
-    console.log('**********response = ', response['data']['results']);
+  else if (response) yield put(setAllSchemas(response['data']['results']));
+  console.log('*******All Schema', response['data']['results']);
 };
 
 function* sendRewards({ payload }) {
@@ -26,7 +24,7 @@ function* sendRewards({ payload }) {
 };
 
 function* actionWatcher() {
-  yield takeEvery('GET_LIST_DATA', getListData);
+  yield takeEvery('GET_LIST_DATA', getAllSchemas);
   yield takeEvery('SEND_REWARDS', sendRewards);
 };
 
@@ -57,7 +55,6 @@ function deleteCall(path) {
     .delete(path)
     .then(response => ({ response }))
     .catch(error => {
-      if (error.response.status === 401) EventBus.publish("tokenExpired");
       return { error };
     });
 };
@@ -67,7 +64,6 @@ function putCall({ path, payload }) {
     .put(path, payload)
     .then(response => ({ response }))
     .catch(error => {
-      if (error.response.status === 401) EventBus.publish("tokenExpired");
       return { error };
     });
 };

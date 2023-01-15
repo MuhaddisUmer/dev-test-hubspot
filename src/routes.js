@@ -1,4 +1,5 @@
 
+import Objects from "./views/Objects/index.js";
 import Dashboard from "./views/Dashboard/index.js";
 
 var routes = [
@@ -15,6 +16,13 @@ var routes = [
     component: Dashboard,
     icon: "tim-icons icon-atom",
   },
+  {
+    path: "/objects",
+    layout: "/home",
+    name: "Objects",
+    component: Objects,
+    icon: "tim-icons icon-atom",
+  }
 ];
 
 export default routes;

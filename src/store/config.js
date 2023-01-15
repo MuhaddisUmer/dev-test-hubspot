@@ -5,7 +5,7 @@ const AppTitle = 'DASHBOARD';
 const AppMode = ['development'];
 
 /* -- set API URLs --*/
-const development = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
+const development = 'http://localhost:8080/https://api.hubapi.com/crm/v3';
 const production = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
 const testing = 'https://cors-anywhere.herokuapp.com/https://api.hubapi.com/crm/v3';
 

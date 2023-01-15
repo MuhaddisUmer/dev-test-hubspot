@@ -7,12 +7,12 @@ export const setLoader = (data) => ({
 
 /*========== DATA ACTIONS ============= */
 
-export const getListData = () => ({
+export const getAllSchemas = () => ({
   type: 'GET_LIST_DATA',
 });
 
 
-export const setListData = (data) => ({
+export const setAllSchemas = (data) => ({
   type: 'SET_LIST_DATA',
   payload: data,
 });
