@@ -7,22 +7,23 @@ export const setLoader = (data) => ({
 
 /*========== DATA ACTIONS ============= */
 
-export const getListData = () => ({
-  type: 'GET_LIST_DATA',
+export const getAllSchemas = () => ({
+  type: 'GET_ALL_SCHEMA_DATA',
 });
 
-export const setListData = (data) => ({
-  type: 'SET_LIST_DATA',
+
+export const setAllSchemas = (data) => ({
+  type: 'SET_ALL_SCHEMA_DATA',
   payload: data,
 });
 
-export const getObjectData = (data) => ({
-  type: 'GET_OBJECT_DATA',
+export const getSingleSchemas = (data) => ({
+  type: 'GET_SINGLE_SCHEMA_DATA',
   payload: data,
 });
 
-export const setObjectData = (data) => ({
-  type: 'SET_OBJECT_DATA',
+export const setSingleSchemas = (data) => ({
+  type: 'SET_SINGLE_SCHEMA_DATA',
   payload: data,
 });
 

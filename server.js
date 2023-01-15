@@ -1,14 +1,13 @@
-const path = require('path');
-const cors = require('cors');
-const express = require('express');
-const compression = require('compression');
+let host = process.env.HOST || '0.0.0.0';
 
-let app = express();
-let port = process.env.PORT || 4000;
+// Listen on a specific port via the PORT environment variable
+let port = process.env.PORT || 8080;
 
-app.use(cors());
-app.use(compression());
-app.use(express.static(__dirname + '/build'));
-app.get('*', (req, res) => res.sendFile(path.normalize(__dirname + '/build/index.html')));
-
-app.listen(port,() => console.log(`listening to ${port}`));
+let cors_proxy = require('cors-anywhere');
+cors_proxy.createServer({
+    originWhitelist: [], // Allow all origins
+    requireHeader: ['origin', 'x-requested-with'],
+    removeHeaders: ['cookie', 'cookie2']
+}).listen(port, host, function() {
+    console.log('Running CORS Anywhere on ' + host + ':' + port);
+});

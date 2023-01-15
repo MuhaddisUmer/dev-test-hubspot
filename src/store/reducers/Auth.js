@@ -4,8 +4,7 @@ import { setToken } from '../axios';
 var initialState = {
   isLoader: { message: 'Please Wait...', status: false },
 
-  listData: [],
-  objectData: {},
+  allSchemas: [],
   isRewardModal: false,
 };
 
@@ -23,17 +22,11 @@ const Auth = (state = initialState, { type, payload }) => {
 
     /*========== REWARDS REDUCERS ============= */
 
-    case 'SET_LIST_DATA':
+    case 'SET_ALL_SCHEMA_DATA':
       return {
         ...state,
-        listData: payload
-      };
-
-    case 'SET_OBJECT_DATA':
-      return {
-        ...state,
-        objectData: payload
-      };
+        allSchemas: payload
+      }
 
     case 'TOGGLE_CREATE_MODAL':
       return {

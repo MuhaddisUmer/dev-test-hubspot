@@ -1,16 +1,13 @@
 import moment from 'moment';
-import EventBus from "eventing-bus";
 import { connect } from 'react-redux';
 import ReactTable from 'react-table-6';
 import React, { Fragment } from 'react';
-import Button from '@material-ui/core/Button';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
 import { getAllSchemas, toggleCreateModal, sendRewards, setLoader } from '../../store/actions/Auth';
 
-class Dashboard extends React.Component {
+class Objects extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,15 +18,14 @@ class Dashboard extends React.Component {
         props.getAllSchemas();
     };
 
-    componentWillReceiveProps({ allSchemas, isRewardModal }) {
+    componentWillReceiveProps({ allSchemas }) {
         this.setState({ allSchemas });
     };
 
-    copied = () => EventBus.publish("success", 'Player Address Copied');
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-    getObjectType = (id) => this.props.getSingleSchemas(id);
-    // hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
+    showPropertiesModal = (properties) => this.setState({ properties }, this.setState({ isPropertiesModal: true }));
+    hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
 
     render() {
         let { isRewardModal } = this.props;
@@ -71,23 +67,21 @@ class Dashboard extends React.Component {
                     </button>
                     : '-',
             },
-        ];
 
-        const propertiesColumns = [
-           
-            // {
-            //     id: 'id',
-            //     Header: 'ID',
-            //     accessor: listData => listData['id'] ? listData['id'] : '-',
-            // },
         ];
 
         return (
             <div className='content'>
                 <div className="main-container player-scores">
                     <div className='main-container-head mb-3'>
-                        <p className="main-container-heading">Dashboard</p>
-                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Schema</button>
+                        <p className="main-container-heading">Select Schema</p>
+                        {allSchemas && allSchemas.length>0 && allSchemas.map(data=>{
+                            return <button className="add-btn">{data['labels']['plural']}</button>
+                        })}
+                    </div>
+                    <div className='main-container-head mb-3'>
+                        <p className="main-container-heading">All Objects of </p>
+                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Object</button>
                     </div>
                     <Fragment>
                         <div className='main-container-head mb-3'>
@@ -107,56 +101,27 @@ class Dashboard extends React.Component {
 
                 <Modal isOpen={false} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
                     <ModalHeader toggle={() => this.hidePropertiesModal()}>
+                        {/* <div className="reward-modal-logo">
+                            <img src={require('../../assets/img/logo.png')} alt="modal-logo" />
+                        </div> */}
                         <div className="properties-modal-title"><p className=''>Properties</p></div>
                         <div className="properties-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body properties-modal-body">
-                    <div className='main-container-head mb-3'>
-                            <ReactTable
-                                minRows={30}
-                                className="table"
-                                data={properties}
-                                columns={propertiesColumns}
-                                filterable={true}
-                                resolveData={properties => properties.map(row => row)}
-                            />
-                        </div>
-                    </ModalBody>
-                </Modal> */}
-
-                {/* ---------------REWARDS MODAL--------------- */}
-
-                {/* <Modal isOpen={isRewardModal} toggle={() => this.props.toggleCreateModal(false)} className="main-modal reward-modal">
-                    <ModalHeader toggle={() => this.props.toggleCreateModal(false)}>
-                        <div className="reward-modal-logo">
-                            <img src={require('../../assets/img/logo.png')} alt="modal-logo" />
-                        </div>
-                        <div className="reward-modal-title"><p className=''>Create Schema</p></div>
-                        <div className="reward-modal-line"><hr /></div>
-                    </ModalHeader>
-                    <ModalBody className="modal-body reward-modal-body">
-                        <div className="row">
-                            <div className="col-2"></div>
-                            <div className="col-8">
-                                <input
-                                    type="number"
-                                    name='rewards'
-                                    value={rewards}
-                                    variant="filled"
-                                    className='text-field'
-                                    onChange={this.handleEditChange}
-                                    placeholder="Enter the amount of Rewards"
-                                /> 
+                            <div className='edit-add'>
+                                <div className="view-data row">
+                                    <div className="view-data-body col-md-12">
+                                        <div className="view-data-row my-2">
+                                            <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
+                                        </div>
+                                        <div className="view-data-row my-2 ml-5">
+                                            <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="col-2"></div>
-                            <div className="col-12 mt-5 d-flex justify-content-around">
-                                <Button className="cancel-btn col-4" type='button' onClick={() => this.props.toggleCreateModal(false)}>Cancel</Button>
-                                <Button className="add-btn col-4" type='button' onClick={this.sendRewards}>Send</Button>
-                            </div>
-                        </div>
                     </ModalBody>
-                </Modal> */}
-
+                </Modal>
             </div>
         );
     }
@@ -167,7 +132,7 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = ({ Auth }) => {
-    let { publicAddress, allSchemas, isRewardModal } = Auth;
-    return { publicAddress, allSchemas, isRewardModal };
+    let { allSchemas } = Auth;
+    return { allSchemas };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Objects);
