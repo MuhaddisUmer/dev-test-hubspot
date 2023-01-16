@@ -212,7 +212,7 @@ class Schemas extends React.Component {
 
                 {/* ---------------CREATE SCHEMA MODAL--------------- */}
 
-                <Modal isOpen={true} toggle={() => this.props.toggleCreateSchema(false)} className="main-modal schema-modal">
+                <Modal isOpen={isCreateSchema} toggle={() => this.props.toggleCreateSchema(false)} className="main-modal schema-modal">
                     <ModalHeader toggle={() => this.props.toggleCreateSchema(false)}>
                         <div className="schema-modal-title"><p className=''>Create Schema</p></div>
                         <div className="schema-modal-line"><hr /></div>
