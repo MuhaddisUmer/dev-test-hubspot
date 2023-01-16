@@ -33,7 +33,7 @@ const Auth = (state = initialState, { type, payload }) => {
       return {
         ...state,
         singleSchema: payload
-      }
+      };
 
     case 'TOGGLE_CREATE_SCHEMA':
       return {

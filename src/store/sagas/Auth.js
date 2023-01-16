@@ -18,14 +18,11 @@ function* getSingleSchemas({ payload }) {
 };
 
 function* createSchema({ payload }) {
-  console.log("**********payload::", payload);
   const { error, response } = yield call(postCall, { path: `/schemas`, payload });
-  console.log("**********error::", error);
-  console.log("**********response::", payload);
-
   if (error) EventBus.publish("error", error['response']['results']['message']);
   else if (response)
     yield put(toggleCreateSchema(false));
+    yield put({ type: "GET_ALL_SCHEMA_DATA" });
 };
 
 

@@ -18,6 +18,7 @@ class Schemas extends React.Component {
             propertiesData: [],
             isPropertiesModal: false,
 
+            // CREATE SCHEMA 
             formData: {
                 name: '',
                 labels: {
@@ -34,7 +35,8 @@ class Schemas extends React.Component {
                 name: '',
                 label: '',
                 isPrimaryDisplayLabel: true,
-            }
+            },
+
         };
         props.getAllSchemas();
     };
@@ -45,9 +47,10 @@ class Schemas extends React.Component {
             this.setState({ propertiesData: singleSchema['properties'] }, () => this.setState({ isPropertiesModal: true }));
     };
 
-    copied = () => EventBus.publish("success", 'Player Address Copied');
+    singleSchema = (id) => this.props.getSingleSchemas(id);
+    togglePropertiesModal = () => this.setState({ isPropertiesModal: false }, () => this.setState({ propertiesData: [] }));
 
-    handleEditChange = (e) => {
+    handleChange = (e) => {
         let { formData } = this.state;
 
         if (e.target.name == 'singular') formData['labels']['singular'] = e.target.value;
@@ -86,49 +89,21 @@ class Schemas extends React.Component {
     submitCreateSchema = () => {
         let { formData } = this.state;
 
-        if(formData['properties'].length == 0) {
+        if (formData['properties'].length == 0) {
             EventBus.publish("error", 'Please add the properties by Clicking on Add Properties Button');
             return;
         };
 
         this.props.createSchema(formData);
-        // this.props.createSchema({
-        //     "name": "muhaddis_object",
-        //     "labels": {
-        //       "singular": "Muhaddis object",
-        //       "plural": "Muhaddis objects"
-        //     },
-        //     "primaryDisplayProperty": "muhaddis_object_property",
-        //     "requiredProperties": [
-        //       "muhaddis_object_property"
-        //     ],
-        //     "properties": [
-        //       {
-        //         "name": "muhaddis_object_property",
-        //         "label": "Muhaddis object property",
-        //         "isPrimaryDisplayLabel": true
-        //       },
-        //       {
-        //         "name": "muhaddis_object_age",
-        //         "label": "Muhaddis object age",
-        //         "isPrimaryDisplayLabel": true
-        //       }
-        //     ],
-        //     "associatedObjects": [
-        //       "CONTACT"
-        //     ],
-        //     "metaType": "PORTAL_SPECIFIC"
-        //   });
-    }
+    };
 
-    singleSchema = (id) => this.props.getSingleSchemas(id);
-    togglePropertiesModal = () => this.setState({ isPropertiesModal: false }, () => this.setState({ propertiesData: [] }));
 
     render() {
 
         let { isCreateSchema } = this.props;
-        let { allSchemas, propertiesData, isPropertiesModal, singleProperty } = this.state;
-        let { name, labels, primaryDisplayProperty, requiredProperties, properties, associatedObjects, metaType } = this.state.formData;
+        let { allSchemas, propertiesData, isPropertiesModal, singleProperty, editSchemaData } = this.state;
+        let { name, labels, primaryDisplayProperty, requiredProperties, properties, metaType } = this.state.formData;
+
 
         const schemaColumns = [
             {
@@ -156,10 +131,9 @@ class Schemas extends React.Component {
                 accessor: allSchemas => allSchemas['updatedAt'] ? moment(allSchemas['updatedAt']).format('ll') : '-',
             },
             {
-                id: 'Action',
-                // Header: 'Player',
+                id: 'view',
                 accessor: allSchemas => allSchemas['objectTypeId']
-                    ? <button className="view-btn" onClick={() => this.singleSchema(allSchemas['objectTypeId'])}>
+                    ? <button className="add-btn" onClick={() => this.singleSchema(allSchemas['objectTypeId'])}>
                         View More
                     </button>
                     : '-',
@@ -220,7 +194,6 @@ class Schemas extends React.Component {
                     <ModalBody className="modal-body schema-modal-body">
                         <ValidatorForm className="form" onSubmit={this.submitCreateSchema}>
                             <div className="row">
-
                                 <div className="offset-md-1 col-md-10">
                                     <TextValidator
                                         fullWidth
@@ -232,10 +205,9 @@ class Schemas extends React.Component {
                                         validators={['required']}
                                         label="Name"
                                         errorMessages={['Name can not be empty']}
-                                        onChange={(e) => this.handleEditChange(e)}
+                                        onChange={(e) => this.handleChange(e)}
                                     />
                                 </div>
-
                                 <div className="offset-md-1 col-md-10">
                                     <div className="col-12">
                                         <label className='label'>Labels</label>
@@ -251,7 +223,7 @@ class Schemas extends React.Component {
                                             validators={['required']}
                                             label="Singular Label"
                                             errorMessages={['Singular Label can not be empty']}
-                                            onChange={(e) => this.handleEditChange(e)}
+                                            onChange={(e) => this.handleChange(e)}
                                         />
                                     </div>
                                     <div className="offset-2 col-8">
@@ -265,11 +237,10 @@ class Schemas extends React.Component {
                                             validators={['required']}
                                             label="Plural Label"
                                             errorMessages={['Plural Label can not be empty']}
-                                            onChange={(e) => this.handleEditChange(e)}
+                                            onChange={(e) => this.handleChange(e)}
                                         />
                                     </div>
                                 </div>
-
                                 <div className="offset-md-1 col-md-10">
                                     <TextValidator
                                         fullWidth
@@ -281,10 +252,9 @@ class Schemas extends React.Component {
                                         validators={['required']}
                                         label="Primary Display Property here"
                                         errorMessages={['Primary Display Property can not be empty']}
-                                        onChange={(e) => this.handleEditChange(e)}
+                                        onChange={(e) => this.handleChange(e)}
                                     />
                                 </div>
-
                                 <div className="offset-md-1 col-md-10">
                                     <TextValidator
                                         fullWidth
@@ -296,11 +266,10 @@ class Schemas extends React.Component {
                                         validators={['required']}
                                         label="Required Properties"
                                         errorMessages={['Required Properties can not be empty']}
-                                        onChange={(e) => this.handleEditChange(e)}
+                                        onChange={(e) => this.handleChange(e)}
                                         helperText="Seperate the Required Properties by Comma(,) without space"
                                     />
                                 </div>
-
                                 <div className="offset-md-1 col-md-10">
                                     <div className="col-12 d-flex justify-content-between">
                                         <label className='label'>Properties</label>
@@ -342,7 +311,6 @@ class Schemas extends React.Component {
                                         />
                                     </div>
                                 </div>
-
                                 <div className="offset-md-1 col-md-10 mt-2">
                                     <TextValidator
                                         fullWidth
@@ -354,10 +322,9 @@ class Schemas extends React.Component {
                                         validators={['required']}
                                         label="Meta Type"
                                         errorMessages={['Meta Type can not be empty']}
-                                        onChange={(e) => this.handleEditChange(e)}
+                                        onChange={(e) => this.handleChange(e)}
                                     />
                                 </div>
-
 
                                 <div className="col-12 mt-5 d-flex justify-content-around">
                                     <Button className="cancel-btn col-4" type='button' onClick={() => this.props.toggleCreateSchema(false)}>Cancel</Button>
@@ -365,7 +332,6 @@ class Schemas extends React.Component {
                                 </div>
                             </div>
                         </ValidatorForm>
-
                     </ModalBody>
                 </Modal>
 
