@@ -25,6 +25,11 @@ export const setSingleSchemas = (data) => ({
   payload: data,
 });
 
+export const createSchema = (data) => ({
+  type: 'CREATE_SCHEMA',
+  payload: data,
+});
+
 export const toggleCreateSchema = (data) => ({
   type: 'TOGGLE_CREATE_SCHEMA',
   payload: data,

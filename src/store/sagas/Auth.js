@@ -17,27 +17,39 @@ function* getSingleSchemas({ payload }) {
   else if (response) yield put(setSingleSchemas(response['data']));
 };
 
+function* createSchema({ payload }) {
+  console.log("**********payload::", payload);
+  const { error, response } = yield call(postCall, { path: `/schemas`, payload });
+  console.log("**********error::", error);
+  console.log("**********response::", payload);
 
-/*========== OBJECTS FUNCTIONS =============*/
-function* getSchemaObjects({payload}) {
-  const { error, response } = yield call(getCall, `/objects/${payload}`);
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response) 
-  // yield put(setAllSchemas(response['data']['results']));
-  console.log('*****All Schema Objects', response['data']['results']);
+  else if (response)
+    yield put(toggleCreateSchema(false));
 };
 
-function* createSchemaObject({objectId, payload}) {
+
+/*========== OBJECTS FUNCTIONS =============*/
+function* getSchemaObjects({ payload }) {
+  const { error, response } = yield call(getCall, `/objects/${payload}`);
+  if (error) EventBus.publish("error", error['response']['results']['message']);
+  else if (response)
+    // yield put(setAllSchemas(response['data']['results']));
+    console.log('*****All Schema Objects', response['data']['results']);
+};
+
+function* createSchemaObject({ objectId, payload }) {
   const { error, response } = yield call(postCall, { path: `/objects/${objectId}`, payload });
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response) 
-  // yield put(setAllSchemas(response['data']['results']));
-  console.log('*****All Schema Objects', response['data']['results']);
+  else if (response)
+    // yield put(setAllSchemas(response['data']['results']));
+    console.log('*****All Schema Objects', response['data']['results']);
 };
 
 function* actionWatcher() {
   yield takeEvery('GET_ALL_SCHEMA_DATA', getAllSchemas);
   yield takeEvery('GET_SINGLE_SCHEMA_DATA', getSingleSchemas);
+  yield takeEvery('CREATE_SCHEMA', createSchema);
 
   yield takeEvery('GET_SCHEMA_OBJECTS', getSchemaObjects);
   yield takeEvery('CREATE_SCHEMA_OBJECT', createSchemaObject);

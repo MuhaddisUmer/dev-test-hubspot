@@ -102,6 +102,10 @@
   color: #fff !important; 
 }
 
+.schema-modal .schema-modal-body .form .form-input .MuiFormHelperText-root.Mui-error {
+  color: #4a08ff !important;
+}
+
 .schema-modal .schema-modal-body .form .MuiFormControl-marginNormal {
   margin-top: 5px !important;
 }

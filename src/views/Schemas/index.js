@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import ReactTable from 'react-table-6';
 import React, { Fragment } from 'react';
 import Button from '@material-ui/core/Button';
-import MenuItem from '@mui/material/MenuItem';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 import './index.css';
-import { getAllSchemas, getSingleSchemas, toggleCreateSchema } from '../../store/actions/Auth';
+import { getAllSchemas, getSingleSchemas, createSchema, toggleCreateSchema } from '../../store/actions/Auth';
 
 class Schemas extends React.Component {
     constructor(props) {
@@ -28,7 +27,7 @@ class Schemas extends React.Component {
                 primaryDisplayProperty: '',
                 requiredProperties: [],
                 properties: [],
-                associatedObjects: [],
+                associatedObjects: ["CONTACT"],
                 metaType: '',
             },
             singleProperty: {
@@ -50,37 +49,17 @@ class Schemas extends React.Component {
 
     handleEditChange = (e) => {
         let { formData } = this.state;
-        let { labels, properties, requiredProperties, associatedObjects } = this.state.formData;
 
-        if (e.target.name == 'singular')
-            formData['labels']['singular'] = e.target.value;
+        if (e.target.name == 'singular') formData['labels']['singular'] = e.target.value;
 
-        else if (e.target.name == 'plural')
-            formData['labels']['plural'] = e.target.value;
+        else if (e.target.name == 'plural') formData['labels']['plural'] = e.target.value;
 
-        else if ([e.target.name] == 'requiredProperties') {
+        else if (e.target.name == 'requiredProperties') {
             let requiredPropertiesValue = e.target.value;
             formData['requiredProperties'] = requiredPropertiesValue.split(',');
         }
-        else if ([e.target.name] == 'associatedObjects') {
-            let associatedObjectsValue = e.target.value;
-            formData['associatedObjects'] = associatedObjectsValue.split(',');
-        };
-        this.setState({ formData });
 
-
-        // if (e.target.name == 'propertiesName') 
-        //     properties['name'] = e.target.value;
-
-        // if (e.target.name == 'propertiesLabel')
-        //     properties['label'] = e.target.value;
-
-        // if (e.target.name == 'isPrimaryDisplayLabel')
-        //     properties['isPrimaryDisplayLabel'] = e.target.value;
-
-
-
-        formData[e.target.name] = e.target.value;
+        else formData[e.target.name] = e.target.value;
         this.setState({ formData });
     };
 
@@ -92,19 +71,61 @@ class Schemas extends React.Component {
 
     submitProperty = () => {
         let { singleProperty, formData } = this.state;
-        formData.properties.push(singleProperty);
-        singleProperty = {
-            name: '',
-            label: '',
-            isPrimaryDisplayLabel: true
+        if (singleProperty['name'] == '' && singleProperty['label'] == '') EventBus.publish("error", 'Please fill the properties first');
+        else {
+            formData['properties'].push(singleProperty);
+            singleProperty = {
+                name: '',
+                label: '',
+                isPrimaryDisplayLabel: true
+            }
+            this.setState({ singleProperty, formData });
         }
-        this.setState({ singleProperty, formData });
     };
+
+    submitCreateSchema = () => {
+        let { formData } = this.state;
+
+        if(formData['properties'].length == 0) {
+            EventBus.publish("error", 'Please add the properties by Clicking on Add Properties Button');
+            return;
+        };
+
+        this.props.createSchema(formData);
+        // this.props.createSchema({
+        //     "name": "muhaddis_object",
+        //     "labels": {
+        //       "singular": "Muhaddis object",
+        //       "plural": "Muhaddis objects"
+        //     },
+        //     "primaryDisplayProperty": "muhaddis_object_property",
+        //     "requiredProperties": [
+        //       "muhaddis_object_property"
+        //     ],
+        //     "properties": [
+        //       {
+        //         "name": "muhaddis_object_property",
+        //         "label": "Muhaddis object property",
+        //         "isPrimaryDisplayLabel": true
+        //       },
+        //       {
+        //         "name": "muhaddis_object_age",
+        //         "label": "Muhaddis object age",
+        //         "isPrimaryDisplayLabel": true
+        //       }
+        //     ],
+        //     "associatedObjects": [
+        //       "CONTACT"
+        //     ],
+        //     "metaType": "PORTAL_SPECIFIC"
+        //   });
+    }
 
     singleSchema = (id) => this.props.getSingleSchemas(id);
     togglePropertiesModal = () => this.setState({ isPropertiesModal: false }, () => this.setState({ propertiesData: [] }));
 
     render() {
+
         let { isCreateSchema } = this.props;
         let { allSchemas, propertiesData, isPropertiesModal, singleProperty } = this.state;
         let { name, labels, primaryDisplayProperty, requiredProperties, properties, associatedObjects, metaType } = this.state.formData;
@@ -197,7 +218,7 @@ class Schemas extends React.Component {
                         <div className="schema-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body schema-modal-body">
-                        <ValidatorForm className="form" onSubmit={this.submitJoinCommunity}>
+                        <ValidatorForm className="form" onSubmit={this.submitCreateSchema}>
                             <div className="row">
 
                                 <div className="offset-md-1 col-md-10">
@@ -209,7 +230,7 @@ class Schemas extends React.Component {
                                         variant="outlined"
                                         className="form-input"
                                         validators={['required']}
-                                        label="Enter the Name here"
+                                        label="Name"
                                         errorMessages={['Name can not be empty']}
                                         onChange={(e) => this.handleEditChange(e)}
                                     />
@@ -283,19 +304,19 @@ class Schemas extends React.Component {
                                 <div className="offset-md-1 col-md-10">
                                     <div className="col-12 d-flex justify-content-between">
                                         <label className='label'>Properties</label>
-                                        <button className='add-btn' onClick={this.submitProperty}>Add Properties</button>
+                                        <a className='add-btn' onClick={this.submitProperty}>Add Properties</a>
                                     </div>
                                     <div className="offset-2 col-8">
                                         {properties.length > 0 && properties.map(property => {
                                             return (
                                                 <div className='text-white'>
-                                                    <strong>Name:&nbsp; </strong> {property['name']} <br/>
+                                                    <strong>Name:&nbsp; </strong> {property['name']} <br />
                                                     <strong>Label:&nbsp; </strong> {property['label']}
                                                 </div>
                                             )
                                         })}
                                     </div>
-                                    <div className="offset-2 col-8">
+                                    <div className="offset-2 col-8 mt-2">
                                         <TextValidator
                                             fullWidth
                                             margin="normal"
@@ -303,9 +324,7 @@ class Schemas extends React.Component {
                                             value={singleProperty['name']}
                                             variant="outlined"
                                             className="form-input"
-                                            validators={['required']}
                                             label="Property Name"
-                                            errorMessages={['Property Name can not be empty']}
                                             onChange={(e) => this.setSingleProperty(e)}
                                         />
                                     </div>
@@ -318,31 +337,13 @@ class Schemas extends React.Component {
                                             value={singleProperty['label']}
                                             variant="outlined"
                                             className="form-input"
-                                            validators={['required']}
                                             label="Property Label"
-                                            errorMessages={['Property Label can not be empty']}
                                             onChange={(e) => this.setSingleProperty(e)}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="offset-md-1 col-md-10">
-                                    <TextValidator
-                                        fullWidth
-                                        margin="normal"
-                                        value={associatedObjects}
-                                        name="associatedObjects"
-                                        variant="outlined"
-                                        className="form-input"
-                                        validators={['required']}
-                                        label="Associated Objects"
-                                        errorMessages={['Associated Objects can not be empty']}
-                                        onChange={(e) => this.handleEditChange(e)}
-                                        helperText="Seperate the Associated Objects by Comma(,) without space"
-                                    />
-                                </div>
-
-                                <div className="offset-md-1 col-md-10">
+                                <div className="offset-md-1 col-md-10 mt-2">
                                     <TextValidator
                                         fullWidth
                                         margin="normal"
@@ -359,8 +360,8 @@ class Schemas extends React.Component {
 
 
                                 <div className="col-12 mt-5 d-flex justify-content-around">
-                                    <Button className="cancel-btn col-4" type='button' onClick={() => this.props.toggleCreateModal(false)}>Cancel</Button>
-                                    <Button className="add-btn col-4" type='button' onClick={this.sendRewards}>Send</Button>
+                                    <Button className="cancel-btn col-4" type='button' onClick={() => this.props.toggleCreateSchema(false)}>Cancel</Button>
+                                    <Button className="add-btn col-4" type='submit'>Create</Button>
                                 </div>
                             </div>
                         </ValidatorForm>
@@ -395,7 +396,7 @@ class Schemas extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getAllSchemas, getSingleSchemas, toggleCreateSchema,
+    getAllSchemas, getSingleSchemas, createSchema, toggleCreateSchema,
 };
 
 const mapStateToProps = ({ Auth }) => {
