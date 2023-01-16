@@ -29,7 +29,6 @@ class Dashboard extends React.Component {
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
     getObjectType = (id) => this.props.getSingleSchemas(id);
-    // hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
 
     render() {
         let { isRewardModal } = this.props;

@@ -6,6 +6,8 @@ var initialState = {
 
   allSchemas: [],
   isRewardModal: false,
+
+  allObjects: [],
 };
 
 const Auth = (state = initialState, { type, payload }) => {
@@ -20,7 +22,7 @@ const Auth = (state = initialState, { type, payload }) => {
         isLoader: payload
       };
 
-    /*========== REWARDS REDUCERS ============= */
+    /*========== SCHEMA REDUCERS ============= */
 
     case 'SET_ALL_SCHEMA_DATA':
       return {
@@ -33,6 +35,13 @@ const Auth = (state = initialState, { type, payload }) => {
         ...state,
         isRewardModal: payload
       };
+
+    /*========== SCHEMA REDUCERS ============= */
+    case 'SET_SCHEMA_OBJECTS':
+      return {
+        ...state,
+        allObjects: payload
+      }
 
     default:
       return state;

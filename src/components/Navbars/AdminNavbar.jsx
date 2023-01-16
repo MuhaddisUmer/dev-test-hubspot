@@ -71,12 +71,6 @@ class AdminNavbar extends React.Component {
     });
   };
 
-  logout = () => {
-    this.props.logout();
-    this.props.history.push('/');
-  };
-
-
   render() {
     return (
       <div className="nav-bar">
@@ -120,15 +114,7 @@ class AdminNavbar extends React.Component {
                       <img alt="..." src={require('../../assets/img/icon.png')} />
                     </div>
                     <b className="caret d-none d-lg-block d-xl-block" />
-                    <p className="d-lg-none">Logout</p>
                   </DropdownToggle>
-                  <DropdownMenu className="dropdown-navbar" right tag="ul">
-                    <DropdownItem divider tag="li" />
-                    <NavLink tag="li" onClick={this.logout}>
-                      <DropdownItem className="nav-item">Logout</DropdownItem>
-                    </NavLink>
-                    <DropdownItem divider tag="li" />
-                  </DropdownMenu>
                 </UncontrolledDropdown>
                 <li className="separator d-lg-none" />
               </Nav>
