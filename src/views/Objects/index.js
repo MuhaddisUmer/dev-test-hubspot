@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
-import { getAllSchemas, toggleCreateModal, getSchemaObjects } from '../../store/actions/Auth';
+import { getAllSchemas, getSchemaObjects } from '../../store/actions/Auth';
 
 class Objects extends React.Component {
     constructor(props) {
@@ -32,10 +32,8 @@ class Objects extends React.Component {
     hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
 
     render() {
-        let { isRewardModal } = this.props;
-        let { allSchemas, selectedSchema, isPropertiesModal } = this.state;
+        let { allSchemas, selectedSchema } = this.state;
 
-        console.log("********selectedSchema::", selectedSchema);
 
         const columns = [
             {
@@ -85,7 +83,7 @@ class Objects extends React.Component {
                     </div>
                     <div className='main-container-head mb-3'>
                         <p className="main-container-heading">{selectedSchema['labels'] ? `All Objects of ${selectedSchema['labels']['plural']}` : 'No Schema Available'}</p>
-                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Object</button>
+                        {/* <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Object</button> */}
                     </div>
                     <Fragment>
                         <div className='main-container-head mb-3'>
@@ -129,7 +127,7 @@ class Objects extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getAllSchemas, toggleCreateModal, getSchemaObjects
+    getAllSchemas, getSchemaObjects
 };
 
 const mapStateToProps = ({ Auth }) => {

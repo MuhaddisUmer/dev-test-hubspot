@@ -6,7 +6,7 @@ var initialState = {
 
   allSchemas: [],
   singleSchema: {},
-  isRewardModal: false,
+  isCreateSchema: false,
 };
 
 const Auth = (state = initialState, { type, payload }) => {
@@ -35,10 +35,10 @@ const Auth = (state = initialState, { type, payload }) => {
         singleSchema: payload
       }
 
-    case 'TOGGLE_CREATE_MODAL':
+    case 'TOGGLE_CREATE_SCHEMA':
       return {
         ...state,
-        isRewardModal: payload
+        isCreateSchema: payload
       };
 
     default:

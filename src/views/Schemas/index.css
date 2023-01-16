@@ -61,3 +61,66 @@
   border: 1px solid #fff;
 }
 
+
+/* ========== Custom Styles Schema Modal =========== */
+  
+.main-modal.schema-modal {
+  max-width: 650px !important;
+  top: -5% !important;
+}
+
+.modal.show .modal-dialog.schema-modal {
+  transform: translate(0, 5%);
+}
+
+.schema-modal .schema-modal-title p {
+  color: #fff !important;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  padding: 30px 0px 10px;
+}
+
+.schema-modal .schema-modal-line hr {
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.schema-modal .schema-modal-body {
+  padding: 25px !important;
+}
+
+.schema-modal .schema-modal-body .form .label {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 0px !important;
+}
+
+.schema-modal .schema-modal-body .form .form-input .MuiOutlinedInput-input, 
+.schema-modal .schema-modal-body .form .form-input .MuiFormHelperText-root,
+.schema-modal .schema-modal-body .form .form-input .MuiInputLabel-outlined,
+.schema-modal .schema-modal-body .form .form-input .MuiSelect-icon {
+  color: #fff !important; 
+}
+
+.schema-modal .schema-modal-body .form .MuiFormControl-marginNormal {
+  margin-top: 5px !important;
+}
+
+.schema-modal .schema-modal-body .form .form-input .MuiOutlinedInput-input {
+  padding: 14px 10px !important;
+}
+
+.schema-modal .schema-modal-body .form .MuiOutlinedInput-notchedOutline {
+  border-color: rgb(185, 185, 185);
+}
+
+.schema-modal .schema-modal-body .form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgb(243, 243, 243);
+}
+
+.schema-modal .schema-modal-body .form .MuiInput-underline::after,
+.schema-modal .schema-modal-body .form .MuiFilledInput-underline:after,
+.schema-modal .schema-modal-body .form .MuiFilledInput-underline:hover:after {
+    border-bottom: 1px solid #f47a2f !important;
+}
+
