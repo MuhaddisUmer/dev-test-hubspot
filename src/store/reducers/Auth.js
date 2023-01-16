@@ -5,6 +5,9 @@ var initialState = {
   isLoader: { message: 'Please Wait...', status: false },
 
   allSchemas: [],
+  isRewardModal: false,
+
+  allObjects: [],
   singleSchema: {},
   isCreateSchema: false,
 };
@@ -21,7 +24,7 @@ const Auth = (state = initialState, { type, payload }) => {
         isLoader: payload
       };
 
-    /*========== REWARDS REDUCERS ============= */
+    /*========== SCHEMA REDUCERS ============= */
 
     case 'SET_ALL_SCHEMA_DATA':
       return {
@@ -40,6 +43,13 @@ const Auth = (state = initialState, { type, payload }) => {
         ...state,
         isCreateSchema: payload
       };
+
+    /*========== SCHEMA REDUCERS ============= */
+    case 'SET_SCHEMA_OBJECTS':
+      return {
+        ...state,
+        allObjects: payload
+      }
 
     default:
       return state;

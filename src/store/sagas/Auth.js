@@ -1,8 +1,7 @@
 import axios from 'axios';
 import EventBus from 'eventing-bus';
 import { all, takeEvery, call, put } from 'redux-saga/effects';
-
-import { setAllSchemas, setSingleSchemas, toggleCreateSchema } from '../actions/Auth';
+import { setAllSchemas, setSingleSchemas, toggleCreateSchema, setSchemaObjects } from '../actions/Auth';
 
 /*========== SCHEMA FUNCTIONS =============*/
 function* getAllSchemas() {
@@ -30,17 +29,14 @@ function* createSchema({ payload }) {
 function* getSchemaObjects({ payload }) {
   const { error, response } = yield call(getCall, `/objects/${payload}`);
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response)
-    // yield put(setAllSchemas(response['data']['results']));
-    console.log('*****All Schema Objects', response['data']['results']);
+  else if (response) yield put(setSchemaObjects(response['data']['results']));
+  console.log('*****All Schema Objects', response['data']['results']);
 };
 
 function* createSchemaObject({ objectId, payload }) {
   const { error, response } = yield call(postCall, { path: `/objects/${objectId}`, payload });
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response)
-    // yield put(setAllSchemas(response['data']['results']));
-    console.log('*****All Schema Objects', response['data']['results']);
+  // else if (response) yield put(setAllSchemas(response['data']['results']));
 };
 
 function* actionWatcher() {
@@ -50,7 +46,6 @@ function* actionWatcher() {
 
   yield takeEvery('GET_SCHEMA_OBJECTS', getSchemaObjects);
   yield takeEvery('CREATE_SCHEMA_OBJECT', createSchemaObject);
-
 };
 
 export default function* rootSaga() {

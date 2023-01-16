@@ -13,87 +13,89 @@ class Objects extends React.Component {
         this.state = {
             allSchemas: [],
             selectedSchema: {},
+
             properties: [],
             isPropertiesModal: false,
+
+            allObjects: [],
         };
         props.getAllSchemas();
     };
 
-    componentWillReceiveProps({ allSchemas }) {
-        this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {} }, () => {
-            if (this.state.selectedSchema['objectTypeId'])
-                this.props.getSchemaObjects(this.state.selectedSchema['objectTypeId'])
-        });
+    componentWillReceiveProps({ allSchemas, allObjects }) {
+        if (this.state.allSchemas.length == 0)
+            this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {} }, () => {
+                if (this.state.selectedSchema['objectTypeId']) {
+                    let params = '', search = this.state.selectedSchema['objectTypeId'];
+                    this.state.selectedSchema.properties.forEach(property => params = params.concat(`${property['name']},`));
+                    if (params) search = search.concat(`?properties=${params}`)
+                    this.props.getSchemaObjects(search)
+                }
+            });
+
+        let resultAllObjects = [];
+        if (allObjects.length > 0) {
+            allObjects.forEach(object => {
+                let newObj = {};
+                Object.keys(object['properties']).forEach(key => {
+                    if (object['properties'][key]) newObj[key] = object['properties'][key]
+                })
+                resultAllObjects.push(newObj);
+            })
+        }
+        this.setState({ allObjects: resultAllObjects });
     };
 
     handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-    showPropertiesModal = (properties) => this.setState({ properties }, this.setState({ isPropertiesModal: true }));
+    showEditObjectModal = (objectId) => {
+        console.log('******** objectId = ', objectId);
+        // this.setState({ properties }, this.setState({ isPropertiesModal: true }));
+    }
     hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
 
     render() {
-        let { allSchemas, selectedSchema } = this.state;
+        let { allSchemas, selectedSchema, allObjects } = this.state;
 
-
-        const columns = [
-            {
-                id: 'id',
-                Header: 'ID',
-                accessor: allSchemas => allSchemas['id'] ? allSchemas['id'] : '-',
-            },
-            {
-                id: 'name',
-                Header: 'Name',
-                accessor: allSchemas => allSchemas['name'] ? allSchemas['name'] : '-',
-            },
-            {
-                id: 'labels',
-                Header: 'Label',
-                accessor: allSchemas => allSchemas['labels'] ? allSchemas['labels']['singular'] : '-',
-            },
-            {
-                id: 'createdAt',
-                Header: 'Created Date',
-                accessor: allSchemas => allSchemas['createdAt'] ? moment(allSchemas['createdAt']).format('ll') : '-',
-            }, {
-                id: 'updatedAt',
-                Header: 'Name',
-                accessor: allSchemas => allSchemas['updatedAt'] ? moment(allSchemas['updatedAt']).format('ll') : '-',
-            },
-            {
-                id: 'Action',
-                // Header: 'Player',
-                accessor: allSchemas => allSchemas['properties']
-                    ? <button className="view-btn" onClick={() => this.showPropertiesModal(allSchemas['properties'])}>
-                        View More
-                    </button>
-                    : '-',
-            },
-
-        ];
+        let keys = [];
+        let dynamicColumns = [];
+        if (allObjects.length > 0) keys = Object.keys(allObjects[0]);
+        keys.forEach(key => {
+            dynamicColumns.push({
+                id: key,
+                Header: key,
+                accessor: allObjects => allObjects[key] ? allObjects[key] : '-',
+            })
+        });
+        dynamicColumns.push({
+            id: 'Action',
+            accessor: allObjects => <button className="view-btn" onClick={() => this.showEditObjectModal(allObjects['hs_object_id'])}>
+                    Edit Object
+                </button>
+        })
 
         return (
             <div className='content'>
                 <div className="main-container player-scores">
                     <div className='main-container-head mb-3'>
                         <p className="main-container-heading">Select Schema</p>
-                        {allSchemas && allSchemas.length > 0 && allSchemas.map(data => {
+                        {selectedSchema['labels'] && allSchemas.map(data => {
                             return <button className={`btn ${data['labels']['plural'] == selectedSchema['labels']['plural'] && 'btn-success'} px-2`}>{data['labels']['plural']}</button>
                         })}
                     </div>
                     <div className='main-container-head mb-3'>
                         <p className="main-container-heading">{selectedSchema['labels'] ? `All Objects of ${selectedSchema['labels']['plural']}` : 'No Schema Available'}</p>
-                        {/* <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Create Object</button> */}
+                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Add New Object</button>
                     </div>
                     <Fragment>
                         <div className='main-container-head mb-3'>
                             <ReactTable
                                 minRows={20}
                                 className="table"
-                                data={allSchemas}
-                                columns={columns}
+                                data={allObjects}
+                                columns={dynamicColumns}
                                 filterable={true}
-                                resolveData={allSchemas => allSchemas.map(row => row)}
+                                resolveData={allObjects => allObjects.map(row => row)}
                             />
                         </div>
                     </Fragment>
@@ -131,7 +133,7 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = ({ Auth }) => {
-    let { allSchemas } = Auth;
-    return { allSchemas };
+    let { allSchemas, allObjects } = Auth;
+    return { allSchemas, allObjects };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Objects);

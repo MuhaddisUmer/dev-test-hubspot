@@ -1,5 +1,4 @@
 /*========== PAGE LOADER ACTIONS ============= */
-
 export const setLoader = (data) => ({
   type: 'SET_LOADER',
   payload: data,
@@ -38,6 +37,11 @@ export const toggleCreateSchema = (data) => ({
 /*========== OBJECTS ACTIONS ============= */
 export const getSchemaObjects = (data) => ({
   type: 'GET_SCHEMA_OBJECTS',
+  payload: data,
+});
+
+export const setSchemaObjects = (data) => ({
+  type: 'SET_SCHEMA_OBJECTS',
   payload: data,
 });
 
