@@ -3,8 +3,6 @@ import EventBus from "eventing-bus";
 import { connect } from 'react-redux';
 import ReactTable from 'react-table-6';
 import React, { Fragment } from 'react';
-import Button from '@material-ui/core/Button';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
