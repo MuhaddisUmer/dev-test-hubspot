@@ -1,8 +1,7 @@
 import axios from 'axios';
 import EventBus from 'eventing-bus';
 import { all, takeEvery, call, put } from 'redux-saga/effects';
-
-import { setAllSchemas, setSingleSchemas, toggleCreateModal, setSchemaObjects } from '../actions/Auth';
+import { setAllSchemas, setSingleSchemas, toggleCreateSchema, setSchemaObjects } from '../actions/Auth';
 
 /*========== SCHEMA FUNCTIONS =============*/
 function* getAllSchemas() {
@@ -14,28 +13,30 @@ function* getAllSchemas() {
 function* getSingleSchemas({ payload }) {
   const { error, response } = yield call(getCall, `/schemas/${payload}`);
   if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response) yield put(setSingleSchemas(response['data']['results']));
+  else if (response) yield put(setSingleSchemas(response['data']));
 };
 
-function* sendRewards({ payload }) {
-  const { error, response } = yield call(postCall, { path: '/leaderboard/rewardsSent', payload });
-  if (error) EventBus.publish("error", error['response']['data']['message']);
-  else if (response) {
-    yield put({ type: "GET_LIST_DATA" });
-    EventBus.publish("success", response['data']['body']['message']);
-  }
-  yield put(toggleCreateModal(false));
+function* createSchema({ payload }) {
+  console.log("**********payload::", payload);
+  const { error, response } = yield call(postCall, { path: `/schemas`, payload });
+  console.log("**********error::", error);
+  console.log("**********response::", payload);
+
+  if (error) EventBus.publish("error", error['response']['results']['message']);
+  else if (response)
+    yield put(toggleCreateSchema(false));
 };
+
 
 /*========== OBJECTS FUNCTIONS =============*/
-function* getSchemaObjects({payload}) {
+function* getSchemaObjects({ payload }) {
   const { error, response } = yield call(getCall, `/objects/${payload}`);
   if (error) EventBus.publish("error", error['response']['results']['message']);
   else if (response) yield put(setSchemaObjects(response['data']['results']));
   console.log('*****All Schema Objects', response['data']['results']);
 };
 
-function* createSchemaObject({objectId, payload}) {
+function* createSchemaObject({ objectId, payload }) {
   const { error, response } = yield call(postCall, { path: `/objects/${objectId}`, payload });
   if (error) EventBus.publish("error", error['response']['results']['message']);
   // else if (response) yield put(setAllSchemas(response['data']['results']));
@@ -44,7 +45,7 @@ function* createSchemaObject({objectId, payload}) {
 function* actionWatcher() {
   yield takeEvery('GET_ALL_SCHEMA_DATA', getAllSchemas);
   yield takeEvery('GET_SINGLE_SCHEMA_DATA', getSingleSchemas);
-  yield takeEvery('SEND_REWARDS', sendRewards);
+  yield takeEvery('CREATE_SCHEMA', createSchema);
 
   yield takeEvery('GET_SCHEMA_OBJECTS', getSchemaObjects);
   yield takeEvery('CREATE_SCHEMA_OBJECT', createSchemaObject);

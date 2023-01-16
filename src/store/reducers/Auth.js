@@ -8,6 +8,8 @@ var initialState = {
   isRewardModal: false,
 
   allObjects: [],
+  singleSchema: {},
+  isCreateSchema: false,
 };
 
 const Auth = (state = initialState, { type, payload }) => {
@@ -28,12 +30,18 @@ const Auth = (state = initialState, { type, payload }) => {
       return {
         ...state,
         allSchemas: payload
-      }
+      };
 
-    case 'TOGGLE_CREATE_MODAL':
+    case 'SET_SINGLE_SCHEMA_DATA':
       return {
         ...state,
-        isRewardModal: payload
+        singleSchema: payload
+      }
+
+    case 'TOGGLE_CREATE_SCHEMA':
+      return {
+        ...state,
+        isCreateSchema: payload
       };
 
     /*========== SCHEMA REDUCERS ============= */

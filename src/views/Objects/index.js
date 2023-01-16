@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import './index.css';
-import { getAllSchemas, toggleCreateModal, getSchemaObjects } from '../../store/actions/Auth';
+import { getAllSchemas, getSchemaObjects } from '../../store/actions/Auth';
 
 class Objects extends React.Component {
     constructor(props) {
@@ -129,7 +129,7 @@ class Objects extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getAllSchemas, toggleCreateModal, getSchemaObjects
+    getAllSchemas, getSchemaObjects
 };
 
 const mapStateToProps = ({ Auth }) => {

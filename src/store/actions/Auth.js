@@ -24,13 +24,13 @@ export const setSingleSchemas = (data) => ({
   payload: data,
 });
 
-export const toggleCreateModal = (data) => ({
-  type: 'TOGGLE_CREATE_MODAL',
+export const createSchema = (data) => ({
+  type: 'CREATE_SCHEMA',
   payload: data,
 });
 
-export const sendRewards = (data) => ({
-  type: 'SEND_REWARDS',
+export const toggleCreateSchema = (data) => ({
+  type: 'TOGGLE_CREATE_SCHEMA',
   payload: data,
 });
 

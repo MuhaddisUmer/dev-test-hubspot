@@ -121,7 +121,7 @@ class Dashboard extends React.Component {
                             />
                         </div>
                     </ModalBody>
-                </Modal> */}
+                </Modal>
 
                 {/* ---------------REWARDS MODAL--------------- */}
 

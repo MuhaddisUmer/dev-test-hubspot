@@ -8791,7 +8791,7 @@ img {
   .modal-content .modal-body {
     line-height: 1.9; }
     .modal-content .modal-body p {
-      color: #222a42; }
+      color: #fff; }
   .modal-content .modal-footer {
     border-top: 0;
     -webkit-justify-content: space-between;
