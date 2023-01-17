@@ -1,11 +1,12 @@
-import moment from 'moment';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table-6';
 import React, { Fragment } from 'react';
+import Button from '@material-ui/core/Button';
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 import './index.css';
-import { getAllSchemas, getSchemaObjects } from '../../store/actions/Auth';
+import { getAllSchemas, getSchemaObjects, addNewObject, editObject } from '../../store/actions/Auth';
 
 class Objects extends React.Component {
     constructor(props) {
@@ -14,48 +15,95 @@ class Objects extends React.Component {
             allSchemas: [],
             selectedSchema: {},
 
-            properties: [],
-            isPropertiesModal: false,
-
             allObjects: [],
+
+            newObjectFormData: {},
+            isNewObjectModal: false,
+
+            editObjectId: {},
+            editObjectFormData: {},
+            isEditObjectModal: false,
         };
         props.getAllSchemas();
     };
 
+
     componentWillReceiveProps({ allSchemas, allObjects }) {
         if (this.state.allSchemas.length == 0)
-            this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {} }, () => {
-                if (this.state.selectedSchema['objectTypeId']) {
-                    let params = '', search = this.state.selectedSchema['objectTypeId'];
-                    this.state.selectedSchema.properties.forEach(property => params = params.concat(`${property['name']},`));
-                    if (params) search = search.concat(`?properties=${params}`)
-                    this.props.getSchemaObjects(search)
-                }
-            });
+            this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {} }, () =>
+                this.changeSelectedSchema(this.state.selectedSchema));
 
         let resultAllObjects = [];
-        if (allObjects.length > 0) {
+        if (allObjects.length > 0)
             allObjects.forEach(object => {
                 let newObj = {};
-                Object.keys(object['properties']).forEach(key => {
-                    if (object['properties'][key]) newObj[key] = object['properties'][key]
-                })
+                Object.keys(object['properties']).forEach(key => 
+                    { if (object['properties'][key]) newObj[key] = object['properties'][key] });
                 resultAllObjects.push(newObj);
-            })
-        }
+            });
+
         this.setState({ allObjects: resultAllObjects });
     };
 
-    handleEditChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-    showEditObjectModal = (objectId) => {
-        console.log('******** objectId = ', objectId);
-        // this.setState({ properties }, this.setState({ isPropertiesModal: true }));
+    changeSelectedSchema = (selectedSchema) => {
+        let params = '', search = selectedSchema['objectTypeId'];
+        selectedSchema.properties.forEach(property => 
+            params = params.concat(`${property['name']},`));
+
+        if (params) search = search.concat(`?properties=${params}`);
+
+        this.props.getSchemaObjects(search);
+        this.setState({ selectedSchema });
     }
-    hidePropertiesModal = () => this.setState({ properties: [] }, this.setState({ isPropertiesModal: false }));
+
+
+    handleAddChange = (e) => {
+        let { newObjectFormData } = this.state;
+        newObjectFormData[e.target.name] = e.target.value;
+        this.setState({ newObjectFormData });
+    }
+    newObjectModal = () => this.setState({ isNewObjectModal: !this.state.isNewObjectModal });
+    submitNewObject = () => {
+        let { newObjectFormData, selectedSchema } = this.state;
+
+        this.newObjectModal();
+        this.setState({ newObjectFormData: {} });
+        this.props.addNewObject({ properties: newObjectFormData }, selectedSchema['objectTypeId']);
+
+        setTimeout(() => this.changeSelectedSchema(selectedSchema), 500);
+    }
+
+
+    editObject = (object) => {
+        this.editObjectModal();
+        this.setState({ editObjectFormData: object });
+    }
+    handleEditChange = (e) => {
+        let { editObjectFormData } = this.state;
+        editObjectFormData[e.target.name] = e.target.value;
+        this.setState({ editObjectFormData });
+    }
+    editObjectModal = () => this.setState({ isEditObjectModal: !this.state.isEditObjectModal });
+    submitEditObject = () => {
+        let properties = {};
+        let { editObjectFormData, selectedSchema } = this.state;
+
+        Object.keys(editObjectFormData).map(key=>{
+            if(key.indexOf('hs') < 0) properties[key] = editObjectFormData[key];
+        });
+
+        this.editObjectModal();
+        this.setState({ editObjectFormData: {} });
+        this.props.editObject({ properties }, `${selectedSchema['objectTypeId']}/${editObjectFormData['hs_object_id']}`);
+
+        setTimeout(() => this.changeSelectedSchema(selectedSchema), 500);
+    }
+
 
     render() {
-        let { allSchemas, selectedSchema, allObjects } = this.state;
+        let { allSchemas, selectedSchema, allObjects, isNewObjectModal, newObjectFormData, isEditObjectModal, editObjectFormData } = this.state;
+        let { properties } = selectedSchema;
 
         let keys = [];
         let dynamicColumns = [];
@@ -69,10 +117,10 @@ class Objects extends React.Component {
         });
         dynamicColumns.push({
             id: 'Action',
-            accessor: allObjects => <button className="view-btn" onClick={() => this.showEditObjectModal(allObjects['hs_object_id'])}>
-                    Edit Object
-                </button>
-        })
+            accessor: allObjects => <button className="view-btn" onClick={() => this.editObject(allObjects)}>
+                Edit Object
+            </button>
+        });
 
         return (
             <div className='content'>
@@ -80,12 +128,12 @@ class Objects extends React.Component {
                     <div className='main-container-head mb-3'>
                         <p className="main-container-heading">Select Schema</p>
                         {selectedSchema['labels'] && allSchemas.map(data => {
-                            return <button className={`btn ${data['labels']['plural'] == selectedSchema['labels']['plural'] && 'btn-success'} px-2`}>{data['labels']['plural']}</button>
+                            return <button onClick={() => this.changeSelectedSchema(data)} className={`btn ${data['labels']['plural'] == selectedSchema['labels']['plural'] && 'btn-success'} px-2`}>{data['labels']['plural']}</button>
                         })}
                     </div>
                     <div className='main-container-head mb-3'>
                         <p className="main-container-heading">{selectedSchema['labels'] ? `All Objects of ${selectedSchema['labels']['plural']}` : 'No Schema Available'}</p>
-                        <button onClick={() => this.props.toggleCreateModal(true)} className="add-btn">Add New Object</button>
+                        <button onClick={() => this.newObjectModal()} className="add-btn">Add New Object</button>
                     </div>
                     <Fragment>
                         <div className='main-container-head mb-3'>
@@ -101,26 +149,77 @@ class Objects extends React.Component {
                     </Fragment>
                 </div>
 
-                {/* ---------------PROPERTIES MODAL--------------- */}
-
-                <Modal isOpen={false} toggle={() => this.hidePropertiesModal()} className="main-modal properties-modal">
-                    <ModalHeader toggle={() => this.hidePropertiesModal()}>
+                {/* ---------------NEW OBJECT MODAL--------------- */}
+                <Modal isOpen={isNewObjectModal} toggle={() => this.newObjectModal()} className="main-modal properties-modal">
+                    <ModalHeader toggle={() => this.newObjectModal()}>
                         <div className="properties-modal-title"><p className=''>Properties</p></div>
                         <div className="properties-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body properties-modal-body">
-                        <div className='edit-add'>
-                            <div className="view-data row">
-                                <div className="view-data-body col-md-12">
-                                    <div className="view-data-row my-2">
-                                        <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
-                                    </div>
-                                    <div className="view-data-row my-2 ml-5">
-                                        <p className="text-dark text-left pl-2"><span className="view-data-title">properties:</span> 123</p>
-                                    </div>
-                                </div>
+                        <ValidatorForm className="form" onSubmit={this.submitNewObject}>
+                            {properties && properties.length > 0 && properties.map(property => {
+                                if (property['type'] == 'string' && property['name'].indexOf('unique') < 0)
+                                    return (
+                                        <div className="row">
+                                            <div className="offset-md-2 col-md-8">
+                                                <TextValidator
+                                                    fullWidth
+                                                    margin="normal"
+                                                    value={newObjectFormData[property['name']]}
+                                                    name={property['name']}
+                                                    variant="outlined"
+                                                    className="form-input"
+                                                    label={property['name']}
+                                                    helper
+                                                    onChange={(e) => this.handleAddChange(e)}
+                                                />
+                                            </div>
+                                        </div>
+                                    )
+                            })}
+
+                            <div className="col-12 mt-5 d-flex justify-content-around">
+                                <Button className="cancel-btn col-4" type='button' onClick={() => this.newObjectModal()}>Cancel</Button>
+                                <Button className="add-btn col-4" type='submit'>Add Object</Button>
                             </div>
-                        </div>
+                        </ValidatorForm>
+                    </ModalBody>
+                </Modal>
+
+                {/* ---------------EDIT OBJECT MODAL--------------- */}
+                <Modal isOpen={isEditObjectModal} toggle={() => this.editObjectModal()} className="main-modal properties-modal">
+                    <ModalHeader toggle={() => this.editObjectModal()}>
+                        <div className="properties-modal-title"><p className=''>Edit Properties</p></div>
+                        <div className="properties-modal-line"><hr /></div>
+                    </ModalHeader>
+                    <ModalBody className="modal-body properties-modal-body">
+                        <ValidatorForm className="form" onSubmit={this.submitEditObject}>
+                            {editObjectFormData && Object.keys(editObjectFormData).map(key => {
+                                if (key.indexOf('hs') < 0)
+                                    return (
+                                        <div className="row">
+                                            <div className="offset-md-2 col-md-8">
+                                                <TextValidator
+                                                    fullWidth
+                                                    margin="normal"
+                                                    value={editObjectFormData[key]}
+                                                    name={key}
+                                                    variant="outlined"
+                                                    className="form-input"
+                                                    label={key}
+                                                    helper
+                                                    onChange={(e) => this.handleEditChange(e)}
+                                                />
+                                            </div>
+                                        </div>
+                                    )
+                            })}
+
+                            <div className="col-12 mt-5 d-flex justify-content-around">
+                                <Button className="cancel-btn col-4" type='button' onClick={() => this.editObjectModal()}>Cancel</Button>
+                                <Button className="add-btn col-4" type='submit'>Edit Object</Button>
+                            </div>
+                        </ValidatorForm>
                     </ModalBody>
                 </Modal>
             </div>
@@ -129,7 +228,7 @@ class Objects extends React.Component {
 }
 
 const mapDispatchToProps = {
-    getAllSchemas, getSchemaObjects
+    getAllSchemas, getSchemaObjects, addNewObject, editObject
 };
 
 const mapStateToProps = ({ Auth }) => {

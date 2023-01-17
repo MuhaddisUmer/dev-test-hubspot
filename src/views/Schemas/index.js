@@ -21,14 +21,14 @@ class Schemas extends React.Component {
             formData: {
                 name: '',
                 labels: {
-                    singular: '',
                     plural: '',
+                    singular: '',
                 },
-                primaryDisplayProperty: '',
-                requiredProperties: [],
-                properties: [],
-                associatedObjects: ["CONTACT"],
                 metaType: '',
+                properties: [],
+                requiredProperties: [],
+                primaryDisplayProperty: '',
+                associatedObjects: ["CONTACT"],
             },
             singleProperty: {
                 name: '',
@@ -220,7 +220,6 @@ class Schemas extends React.Component {
                     <ModalBody className="modal-body schema-modal-body">
                         <ValidatorForm className="form" onSubmit={this.submitCreateSchema}>
                             <div className="row">
-
                                 <div className="offset-md-1 col-md-10">
                                     <TextValidator
                                         fullWidth

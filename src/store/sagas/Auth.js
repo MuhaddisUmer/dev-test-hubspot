@@ -6,40 +6,40 @@ import { setAllSchemas, setSingleSchemas, toggleCreateSchema, setSchemaObjects }
 /*========== SCHEMA FUNCTIONS =============*/
 function* getAllSchemas() {
   const { error, response } = yield call(getCall, '/schemas');
-  if (error) EventBus.publish("error", error['response']['results']['message']);
+  if (error) EventBus.publish("error", error['response']['data']['message']);
   else if (response) yield put(setAllSchemas(response['data']['results']));
 };
 
 function* getSingleSchemas({ payload }) {
   const { error, response } = yield call(getCall, `/schemas/${payload}`);
-  if (error) EventBus.publish("error", error['response']['results']['message']);
+  if (error) EventBus.publish("error", error['response']['data']['message']);
   else if (response) yield put(setSingleSchemas(response['data']));
 };
 
 function* createSchema({ payload }) {
-  console.log("**********payload::", payload);
   const { error, response } = yield call(postCall, { path: `/schemas`, payload });
-  console.log("**********error::", error);
-  console.log("**********response::", payload);
-
-  if (error) EventBus.publish("error", error['response']['results']['message']);
-  else if (response)
-    yield put(toggleCreateSchema(false));
+  if (error) EventBus.publish("error", error['response']['data']['message']);
+  else if (response) yield put(toggleCreateSchema(false));
 };
 
 
 /*========== OBJECTS FUNCTIONS =============*/
 function* getSchemaObjects({ payload }) {
   const { error, response } = yield call(getCall, `/objects/${payload}`);
-  if (error) EventBus.publish("error", error['response']['results']['message']);
+  if (error) EventBus.publish("error", error['response']['data']['message']);
   else if (response) yield put(setSchemaObjects(response['data']['results']));
-  console.log('*****All Schema Objects', response['data']['results']);
 };
 
-function* createSchemaObject({ objectId, payload }) {
+function* addNewObject({ payload, objectId }) {
   const { error, response } = yield call(postCall, { path: `/objects/${objectId}`, payload });
-  if (error) EventBus.publish("error", error['response']['results']['message']);
-  // else if (response) yield put(setAllSchemas(response['data']['results']));
+  if (error) EventBus.publish("error", error['response']['data']['message']);
+  else if (response) EventBus.publish("success", 'New object has been added!');
+};
+
+function* editObject({ payload, objectId }) {
+  const { error, response } = yield call(patchCall, { path: `/objects/${objectId}`, payload });
+  if (error) EventBus.publish("error", error['response']['data']['message']);
+  else if (response) EventBus.publish("success", 'Object has been edited successfully!');
 };
 
 function* actionWatcher() {
@@ -48,7 +48,8 @@ function* actionWatcher() {
   yield takeEvery('CREATE_SCHEMA', createSchema);
 
   yield takeEvery('GET_SCHEMA_OBJECTS', getSchemaObjects);
-  yield takeEvery('CREATE_SCHEMA_OBJECT', createSchemaObject);
+  yield takeEvery('ADD_NEW_OBJECTS', addNewObject);
+  yield takeEvery('EDIT_OBJECT', editObject);
 };
 
 export default function* rootSaga() {
@@ -73,18 +74,9 @@ function getCall(path) {
     });
 };
 
-function deleteCall(path) {
+function patchCall({ path, payload }) {
   return axios
-    .delete(path)
-    .then(response => ({ response }))
-    .catch(error => {
-      return { error };
-    });
-};
-
-function putCall({ path, payload }) {
-  return axios
-    .put(path, payload)
+    .patch(path, payload)
     .then(response => ({ response }))
     .catch(error => {
       return { error };

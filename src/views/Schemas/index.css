@@ -41,7 +41,7 @@
 .properties-modal .properties-modal-body {
   padding: 25px !important;
   margin: 25px;
-  background: #fff;
+  /* background: #fff; */
 }
 
 .properties-modal .properties-modal-body .text-field {
@@ -111,7 +111,12 @@
 }
 
 .schema-modal .schema-modal-body .form .form-input .MuiOutlinedInput-input {
-  padding: 14px 10px !important;
+  padding: 10px 0px !important;
+}
+
+.form .form-input .MuiFormControl-marginNormal {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
 }
 
 .schema-modal .schema-modal-body .form .MuiOutlinedInput-notchedOutline {

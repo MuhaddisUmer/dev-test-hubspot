@@ -45,8 +45,14 @@ export const setSchemaObjects = (data) => ({
   payload: data,
 });
 
-export const createSchemaObject = (objectId, data) => ({
-  type: 'CREATE_SCHEMA_OBJECT',
+export const addNewObject = (data, objectId) => ({
+  type: 'ADD_NEW_OBJECTS',
+  objectId,
+  payload: data,
+});
+
+export const editObject = (data, objectId) => ({
+  type: 'EDIT_OBJECT',
   objectId,
   payload: data,
 });

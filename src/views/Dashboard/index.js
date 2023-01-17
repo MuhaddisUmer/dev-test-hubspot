@@ -34,44 +34,42 @@ class Dashboard extends React.Component {
 
         console.log("********allSchemas::", allSchemas);
 
-        const columns = [
-            {
-                id: 'id',
-                Header: 'ID',
-                accessor: allSchemas => allSchemas['id'] ? allSchemas['id'] : '-',
-            },
-            {
-                id: 'name',
-                Header: 'Name',
-                accessor: allSchemas => allSchemas['name'] ? allSchemas['name'] : '-',
-            },
-            {
-                id: 'labels',
-                Header: 'Label',
-                accessor: allSchemas => allSchemas['labels'] ? allSchemas['labels']['singular'] : '-',
-            },
-            {
-                id: 'createdAt',
-                Header: 'Created Date',
-                accessor: allSchemas => allSchemas['createdAt'] ? moment(allSchemas['createdAt']).format('ll') : '-',
-            }, {
-                id: 'updatedAt',
-                Header: 'Name',
-                accessor: allSchemas => allSchemas['updatedAt'] ? moment(allSchemas['updatedAt']).format('ll') : '-',
-            },
-            {
-                id: 'Action',
-                // Header: 'Player',
-                accessor: allSchemas => allSchemas['properties']
-                    ? <button className="view-btn" onClick={() => this.showPropertiesModal(allSchemas['properties'])}>
-                        View More
-                    </button>
-                    : '-',
-            },
-        ];
+        const columns = [{
+            id: 'id',
+            Header: 'ID',
+            accessor: allSchemas => allSchemas['id'] ? allSchemas['id'] : '-',
+        },
+        {
+            id: 'name',
+            Header: 'Name',
+            accessor: allSchemas => allSchemas['name'] ? allSchemas['name'] : '-',
+        },
+        {
+            id: 'labels',
+            Header: 'Label',
+            accessor: allSchemas => allSchemas['labels'] ? allSchemas['labels']['singular'] : '-',
+        },
+        {
+            id: 'createdAt',
+            Header: 'Created Date',
+            accessor: allSchemas => allSchemas['createdAt'] ? moment(allSchemas['createdAt']).format('ll') : '-',
+        }, {
+            id: 'updatedAt',
+            Header: 'Name',
+            accessor: allSchemas => allSchemas['updatedAt'] ? moment(allSchemas['updatedAt']).format('ll') : '-',
+        },
+        {
+            id: 'Action',
+            // Header: 'Player',
+            accessor: allSchemas => allSchemas['properties']
+                ? <button className="view-btn" onClick={() => this.showPropertiesModal(allSchemas['properties'])}>
+                    View More
+                </button>
+                : '-',
+        }];
 
         const propertiesColumns = [
-           
+
             // {
             //     id: 'id',
             //     Header: 'ID',
@@ -108,7 +106,7 @@ class Dashboard extends React.Component {
                         <div className="properties-modal-line"><hr /></div>
                     </ModalHeader>
                     <ModalBody className="modal-body properties-modal-body">
-                    <div className='main-container-head mb-3'>
+                        <div className='main-container-head mb-3'>
                             <ReactTable
                                 minRows={30}
                                 className="table"
