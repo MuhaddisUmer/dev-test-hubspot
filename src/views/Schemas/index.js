@@ -18,25 +18,24 @@ class Schemas extends React.Component {
             propertiesData: [],
             isPropertiesModal: false,
 
-            // CREATE SCHEMA 
+            /* CREATE SCHEMA FORMDATA */
             formData: {
                 name: '',
                 labels: {
                     plural: '',
                     singular: '',
                 },
-                metaType: '',
                 properties: [],
                 requiredProperties: [],
                 primaryDisplayProperty: '',
+                metaType: 'PORTAL_SPECIFIC',
                 associatedObjects: ["CONTACT"],
             },
             singleProperty: {
                 name: '',
                 label: '',
                 isPrimaryDisplayLabel: true,
-            },
-
+            }
         };
         props.getAllSchemas();
     };
@@ -47,26 +46,25 @@ class Schemas extends React.Component {
             this.setState({ propertiesData: singleSchema['properties'] });
     };
 
+    /* GET SINGLE SCHEMA */
     singleSchema = (id) => {
         this.props.getSingleSchemas(id);
         this.setState({ isPropertiesModal: true });
     };
-    
+
     togglePropertiesModal = () => this.setState({ isPropertiesModal: false }, () => this.setState({ propertiesData: [] }));
 
+    /* UPDATE INPUT FIELD */
     handleChange = (e) => {
         let { formData } = this.state;
 
         if (e.target.name == 'singular') formData['labels']['singular'] = e.target.value;
-
         else if (e.target.name == 'plural') formData['labels']['plural'] = e.target.value;
-
         else if (e.target.name == 'requiredProperties') {
             let requiredPropertiesValue = e.target.value;
             formData['requiredProperties'] = requiredPropertiesValue.split(',');
-        }
+        } else formData[e.target.name] = e.target.value;
 
-        else formData[e.target.name] = e.target.value;
         this.setState({ formData });
     };
 
@@ -92,7 +90,6 @@ class Schemas extends React.Component {
 
     submitCreateSchema = () => {
         let { formData } = this.state;
-
         if (formData['properties'].length == 0) {
             EventBus.publish("error", 'Please add the properties by Clicking on Add Properties Button');
             return;
@@ -109,63 +106,59 @@ class Schemas extends React.Component {
         let { name, labels, primaryDisplayProperty, requiredProperties, properties, metaType } = this.state.formData;
 
 
-        const schemaColumns = [
-            {
-                id: 'id',
-                Header: 'ID',
-                accessor: allSchemas => allSchemas['id'] ? allSchemas['id'] : '-',
-            },
-            {
-                id: 'name',
-                Header: 'Name',
-                accessor: allSchemas => allSchemas['name'] ? allSchemas['name'] : '-',
-            },
-            {
-                id: 'labels',
-                Header: 'Label',
-                accessor: allSchemas => allSchemas['labels'] ? allSchemas['labels']['singular'] : '-',
-            },
-            {
-                id: 'createdAt',
-                Header: 'Created Date',
-                accessor: allSchemas => allSchemas['createdAt'] ? moment(allSchemas['createdAt']).format('ll') : '-',
-            }, {
-                id: 'updatedAt',
-                Header: 'Name',
-                accessor: allSchemas => allSchemas['updatedAt'] ? moment(allSchemas['updatedAt']).format('ll') : '-',
-            },
-            {
-                id: 'view',
-                accessor: allSchemas => allSchemas['objectTypeId']
-                    ? <button className="add-btn" onClick={() => this.singleSchema(allSchemas['objectTypeId'])}>
-                        View More
-                    </button>
-                    : '-',
-            },
-        ];
+        const schemaColumns = [{
+            id: 'id',
+            Header: 'ID',
+            accessor: allSchemas => allSchemas['id'] ? allSchemas['id'] : '-',
+        },
+        {
+            id: 'name',
+            Header: 'Name',
+            accessor: allSchemas => allSchemas['name'] ? allSchemas['name'] : '-',
+        },
+        {
+            id: 'labels',
+            Header: 'Label',
+            accessor: allSchemas => allSchemas['labels'] ? allSchemas['labels']['singular'] : '-',
+        },
+        {
+            id: 'createdAt',
+            Header: 'Created Date',
+            accessor: allSchemas => allSchemas['createdAt'] ? moment(allSchemas['createdAt']).format('ll') : '-',
+        }, {
+            id: 'updatedAt',
+            Header: 'Name',
+            accessor: allSchemas => allSchemas['updatedAt'] ? moment(allSchemas['updatedAt']).format('ll') : '-',
+        },
+        {
+            id: 'view',
+            accessor: allSchemas => allSchemas['objectTypeId']
+                ? <button className="add-btn" onClick={() => this.singleSchema(allSchemas['objectTypeId'])}>
+                    View More
+                </button>
+                : '-',
+        }];
 
-        const propertiesColumns = [
-            {
-                id: 'name',
-                Header: 'Name',
-                accessor: listData => listData['name'] ? listData['name'] : '-',
-            },
-            {
-                id: 'label',
-                Header: 'Label',
-                accessor: listData => listData['label'] ? listData['label'] : '-',
-            },
-            {
-                id: 'type',
-                Header: 'Type',
-                accessor: listData => listData['type'] ? listData['type'] : '-',
-            },
-            {
-                id: 'fieldType',
-                Header: 'Field Type',
-                accessor: listData => listData['fieldType'] ? listData['fieldType'] : '-',
-            },
-        ];
+        const propertiesColumns = [{
+            id: 'name',
+            Header: 'Name',
+            accessor: listData => listData['name'] ? listData['name'] : '-',
+        },
+        {
+            id: 'label',
+            Header: 'Label',
+            accessor: listData => listData['label'] ? listData['label'] : '-',
+        },
+        {
+            id: 'type',
+            Header: 'Type',
+            accessor: listData => listData['type'] ? listData['type'] : '-',
+        },
+        {
+            id: 'fieldType',
+            Header: 'Field Type',
+            accessor: listData => listData['fieldType'] ? listData['fieldType'] : '-',
+        }];
 
         return (
             <div className='content'>
@@ -207,7 +200,7 @@ class Schemas extends React.Component {
                                         variant="outlined"
                                         className="form-input"
                                         validators={['required']}
-                                        label="Name"
+                                        label="Name (eg: car_object)"
                                         errorMessages={['Name can not be empty']}
                                         onChange={(e) => this.handleChange(e)}
                                     />
@@ -225,7 +218,7 @@ class Schemas extends React.Component {
                                             variant="outlined"
                                             className="form-input"
                                             validators={['required']}
-                                            label="Singular Label"
+                                            label="Singular Label (eg: Car)"
                                             errorMessages={['Singular Label can not be empty']}
                                             onChange={(e) => this.handleChange(e)}
                                         />
@@ -239,7 +232,7 @@ class Schemas extends React.Component {
                                             variant="outlined"
                                             className="form-input"
                                             validators={['required']}
-                                            label="Plural Label"
+                                            label="Plural Label (eg: Cars)"
                                             errorMessages={['Plural Label can not be empty']}
                                             onChange={(e) => this.handleChange(e)}
                                         />
@@ -254,7 +247,7 @@ class Schemas extends React.Component {
                                         variant="outlined"
                                         className="form-input"
                                         validators={['required']}
-                                        label="Primary Display Property here"
+                                        label="Primary Display Property here (eg: car_model)"
                                         errorMessages={['Primary Display Property can not be empty']}
                                         onChange={(e) => this.handleChange(e)}
                                     />
@@ -268,7 +261,7 @@ class Schemas extends React.Component {
                                         variant="outlined"
                                         className="form-input"
                                         validators={['required']}
-                                        label="Required Properties"
+                                        label="Required Properties (eg: car_model)"
                                         errorMessages={['Required Properties can not be empty']}
                                         onChange={(e) => this.handleChange(e)}
                                         helperText="Seperate the Required Properties by Comma(,) without space"
@@ -297,7 +290,7 @@ class Schemas extends React.Component {
                                             value={singleProperty['name']}
                                             variant="outlined"
                                             className="form-input"
-                                            label="Property Name"
+                                            label="Property Name (eg: car_model)"
                                             onChange={(e) => this.setSingleProperty(e)}
                                         />
                                     </div>
@@ -310,27 +303,13 @@ class Schemas extends React.Component {
                                             value={singleProperty['label']}
                                             variant="outlined"
                                             className="form-input"
-                                            label="Property Label"
+                                            label="Property Label (eg: This car model year)"
                                             onChange={(e) => this.setSingleProperty(e)}
                                         />
                                     </div>
                                 </div>
-                                <div className="offset-md-1 col-md-10 mt-2">
-                                    <TextValidator
-                                        fullWidth
-                                        margin="normal"
-                                        value={metaType}
-                                        name="metaType"
-                                        variant="outlined"
-                                        className="form-input"
-                                        validators={['required']}
-                                        label="Meta Type"
-                                        errorMessages={['Meta Type can not be empty']}
-                                        onChange={(e) => this.handleChange(e)}
-                                    />
-                                </div>
 
-                                <div className="col-12 mt-5 d-flex justify-content-around">
+                                <div className="col-12 mt-3 d-flex justify-content-around">
                                     <Button className="cancel-btn col-4" type='button' onClick={() => this.props.toggleCreateSchema(false)}>Cancel</Button>
                                     <Button className="add-btn col-4" type='submit'>Create</Button>
                                 </div>
@@ -373,4 +352,5 @@ const mapStateToProps = ({ Auth }) => {
     let { allSchemas, singleSchema, isCreateSchema } = Auth;
     return { allSchemas, singleSchema, isCreateSchema };
 };
+
 export default connect(mapStateToProps, mapDispatchToProps)(Schemas);

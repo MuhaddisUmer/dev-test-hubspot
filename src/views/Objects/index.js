@@ -27,7 +27,7 @@ class Objects extends React.Component {
         props.getAllSchemas();
     };
 
-
+    /* All updated props will be received */
     componentWillReceiveProps({ allSchemas, allObjects }) {
         if (this.state.allSchemas.length == 0)
             this.setState({ allSchemas, selectedSchema: allSchemas && allSchemas.length > 0 ? allSchemas[0] : {} }, () =>
@@ -45,7 +45,7 @@ class Objects extends React.Component {
         this.setState({ allObjects: resultAllObjects });
     };
 
-
+    /* Get Object for the Schema */
     changeSelectedSchema = (selectedSchema) => {
         let params = '', search = selectedSchema['objectTypeId'];
         selectedSchema.properties.forEach(property => 
@@ -58,6 +58,7 @@ class Objects extends React.Component {
     }
 
 
+    /* Add NEW OBJECT */
     handleAddChange = (e) => {
         let { newObjectFormData } = this.state;
         newObjectFormData[e.target.name] = e.target.value;
@@ -75,6 +76,7 @@ class Objects extends React.Component {
     }
 
 
+    /* EDIT NEW OBJECT */
     editObject = (object) => {
         this.editObjectModal();
         this.setState({ editObjectFormData: object });
@@ -149,6 +151,7 @@ class Objects extends React.Component {
                     </Fragment>
                 </div>
 
+
                 {/* ---------------ADD OBJECT MODAL--------------- */}
                 <Modal isOpen={isNewObjectModal} toggle={() => this.newObjectModal()} className="main-modal add-modal">
                     <ModalHeader toggle={() => this.newObjectModal()}>
@@ -186,6 +189,7 @@ class Objects extends React.Component {
                     </ModalBody>
                 </Modal>
 
+
                 {/* ---------------EDIT OBJECT MODAL--------------- */}
                 <Modal isOpen={isEditObjectModal} toggle={() => this.editObjectModal()} className="main-modal add-modal">
                     <ModalHeader toggle={() => this.editObjectModal()}>
@@ -215,7 +219,7 @@ class Objects extends React.Component {
                                     )
                             })}
 
-                            <div className="col-12 mt-5 d-flex justify-content-around">
+                            <div className="col-12 mt-3 d-flex justify-content-around">
                                 <Button className="cancel-btn col-4" type='button' onClick={() => this.editObjectModal()}>Cancel</Button>
                                 <Button className="add-btn col-4" type='submit'>Edit Object</Button>
                             </div>
