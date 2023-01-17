@@ -41,7 +41,7 @@
 .properties-modal .properties-modal-body {
   padding: 25px !important;
   margin: 25px;
-  /* background: #fff; */
+  background: #fff;
 }
 
 .properties-modal .properties-modal-body .text-field {
@@ -111,7 +111,7 @@
 }
 
 .schema-modal .schema-modal-body .form .form-input .MuiOutlinedInput-input {
-  padding: 10px 0px !important;
+  padding: 15px 0px !important;
 }
 
 .form .form-input .MuiFormControl-marginNormal {
@@ -127,9 +127,4 @@
   border-color: rgb(243, 243, 243);
 }
 
-.schema-modal .schema-modal-body .form .MuiInput-underline::after,
-.schema-modal .schema-modal-body .form .MuiFilledInput-underline:after,
-.schema-modal .schema-modal-body .form .MuiFilledInput-underline:hover:after {
-    border-bottom: 1px solid #f47a2f !important;
-}
 

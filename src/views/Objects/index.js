@@ -149,13 +149,13 @@ class Objects extends React.Component {
                     </Fragment>
                 </div>
 
-                {/* ---------------NEW OBJECT MODAL--------------- */}
-                <Modal isOpen={isNewObjectModal} toggle={() => this.newObjectModal()} className="main-modal properties-modal">
+                {/* ---------------ADD OBJECT MODAL--------------- */}
+                <Modal isOpen={isNewObjectModal} toggle={() => this.newObjectModal()} className="main-modal add-modal">
                     <ModalHeader toggle={() => this.newObjectModal()}>
-                        <div className="properties-modal-title"><p className=''>Properties</p></div>
-                        <div className="properties-modal-line"><hr /></div>
+                        <div className="add-modal-title"><p className=''>Properties</p></div>
+                        <div className="add-modal-line"><hr /></div>
                     </ModalHeader>
-                    <ModalBody className="modal-body properties-modal-body">
+                    <ModalBody className="modal-body add-modal-body">
                         <ValidatorForm className="form" onSubmit={this.submitNewObject}>
                             {properties && properties.length > 0 && properties.map(property => {
                                 if (property['type'] == 'string' && property['name'].indexOf('unique') < 0)
@@ -187,12 +187,12 @@ class Objects extends React.Component {
                 </Modal>
 
                 {/* ---------------EDIT OBJECT MODAL--------------- */}
-                <Modal isOpen={isEditObjectModal} toggle={() => this.editObjectModal()} className="main-modal properties-modal">
+                <Modal isOpen={isEditObjectModal} toggle={() => this.editObjectModal()} className="main-modal add-modal">
                     <ModalHeader toggle={() => this.editObjectModal()}>
-                        <div className="properties-modal-title"><p className=''>Edit Properties</p></div>
-                        <div className="properties-modal-line"><hr /></div>
+                        <div className="add-modal-title"><p className=''>Edit Properties</p></div>
+                        <div className="add-modal-line"><hr /></div>
                     </ModalHeader>
-                    <ModalBody className="modal-body properties-modal-body">
+                    <ModalBody className="modal-body add-modal-body">
                         <ValidatorForm className="form" onSubmit={this.submitEditObject}>
                             {editObjectFormData && Object.keys(editObjectFormData).map(key => {
                                 if (key.indexOf('hs') < 0)

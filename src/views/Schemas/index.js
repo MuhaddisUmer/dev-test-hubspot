@@ -44,10 +44,14 @@ class Schemas extends React.Component {
     componentWillReceiveProps({ allSchemas, singleSchema }) {
         this.setState({ allSchemas });
         if (singleSchema['properties'])
-            this.setState({ propertiesData: singleSchema['properties'] }, () => this.setState({ isPropertiesModal: true }));
+            this.setState({ propertiesData: singleSchema['properties'] });
     };
 
-    singleSchema = (id) => this.props.getSingleSchemas(id);
+    singleSchema = (id) => {
+        this.props.getSingleSchemas(id);
+        this.setState({ isPropertiesModal: true });
+    };
+    
     togglePropertiesModal = () => this.setState({ isPropertiesModal: false }, () => this.setState({ propertiesData: [] }));
 
     handleChange = (e) => {
