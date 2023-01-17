@@ -14,3 +14,5 @@ node server.js
 ```
 npm run develop
 ```
+
+Code will be running on: http://localhost:3000
